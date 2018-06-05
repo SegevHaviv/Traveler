@@ -23,7 +23,7 @@
         <!--//////////////////Login Email////////////////////////-->
         <EditText
             android:id="@+id/login_email_ed"
-            android:drawableLeft="@drawable/login"
+            android:drawableStart="@drawable/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -43,7 +43,7 @@
         android:layout_below="@+id/login_email_ed"
         android:layout_centerHorizontal="true"
         android:backgroundTint="@android:color/white"
-        android:drawableLeft="@drawable/key"
+        android:drawableStart="@drawable/key"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
