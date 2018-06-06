@@ -1,5 +1,6 @@
 package com.example.segev.traveler;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,7 @@ import com.example.segev.traveler.Model.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//TODO Handle the case a user already logged in
+//TODO Upgrading the spinner to alert dialog spinner
 
 public class LoginActivity extends AppCompatActivity {
     private final static String TAG = LoginActivity.class.getSimpleName();
@@ -42,15 +43,20 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Hiding the time bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//Remove notification bar
 
         setContentView(R.layout.activity_login);
+        //Hiding the action bar
+        getSupportActionBar().hide();
 
         if(UserModel.instance.getCurrentUser() != null){
-            Log.d(TAG,"User already logged in with " + UserModel.instance.getCurrentUser().getDisplayName());
+            Log.d(TAG,"User already logged in with " + UserModel.instance.getCurrentUser().getEmail());
             Intent switchActivityIntent = new Intent(this,MainScreenActivity.class);
+            switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(switchActivityIntent);
+            finish();
         }
 
         initializeViews();
@@ -108,7 +114,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onLogin() {
                         spinner.setVisibility(View.GONE);
                         Intent switchActivityIntent = new Intent(getApplicationContext(),MainScreenActivity.class);
+                        switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(switchActivityIntent);
+                        finish();
                     }
 
                     @Override

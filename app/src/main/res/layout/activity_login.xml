@@ -60,14 +60,16 @@
     <!--//////////////////Login Button////////////////////////-->
     <Button
         android:id="@+id/login_button"
+        android:background="@drawable/loginandregister"
         android:layout_marginTop="10dp"
         android:layout_width="153dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/login_password_ed"
         android:layout_centerHorizontal="true"
-        android:background="@color/colorBrown"
         android:text="@string/login" />
 
+
+    <!--//////////////////Create Account TextView////////////////////////-->
     <TextView
         android:id="@+id/createAccount"
         android:layout_marginTop="10dp"
