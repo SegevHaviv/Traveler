@@ -1,9 +1,25 @@
 <resources>
     <string name="app_name">Traveler</string>
+
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="CreateAccount">Create An Account</string>
+
+    <string name="create_account">Create An Account</string>
     <string name="Register">Register</string>
 
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+
+    <string name="open">Open</string>
+    <string name="close">>Close</string>
+
+
+    <!--Menu Items' titles-->
+    <string name="home">Home</string>
+    <string name="trips_Experiences">Trips Experiences</string>
+    <string name="equipment_sale">Equipment Sale</string>
+    <string name="articles">Articles</string>
+    <string name="vouchers">Vouchers</string>
+    <string name="saved">Saved</string>
+    <string name="action_settings">Settings</string>
 </resources>

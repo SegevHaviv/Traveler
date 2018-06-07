@@ -37,22 +37,18 @@ public class LoginActivity extends AppCompatActivity {
     private Button mLoginButton;
     //Buttons
 
+    //ProgressBar
     private ProgressBar spinner;
+    //ProgressBar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Hiding the time bar
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE); //Remove title bar
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);//Remove notification bar
-
         setContentView(R.layout.activity_login);
-        //Hiding the action bar
-        getSupportActionBar().hide();
 
-        if(UserModel.instance.getCurrentUser() != null){
-            Log.d(TAG,"User already logged in with " + UserModel.instance.getCurrentUser().getEmail());
+
+        if(UserModel.getInstance().getCurrentUser() != null){
+            Log.d(TAG,"User already logged in with " + UserModel.getInstance().getCurrentUser().getEmail());
             Intent switchActivityIntent = new Intent(this,MainScreenActivity.class);
             switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(switchActivityIntent);
@@ -61,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
         initializeViews();
         initializeButtons();
+        bindButtons();
     }
 
     @Override
@@ -73,14 +70,15 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordField = findViewById(R.id.login_password_ed);
     }
 
-
     public void initializeButtons(){
         spinner = findViewById(R.id.login_ProgressBar);
         spinner.setVisibility(View.GONE);
 
         mLoginButton = findViewById(R.id.login_button);
         createAccountText = findViewById(R.id.createAccount);
+    }
 
+    public void bindButtons(){
         createAccountText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,22 +92,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mLoginButton.setEnabled(false);
 
-                //Hiding the keyboard
-                View view = getCurrentFocus();
-                if (view != null) {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
-
-
-                if(!validateForm())
-                    return;
+                hideKeyboard();
 
                 String email = mEmailField.getText().toString();
                 String password = mPasswordField.getText().toString();
 
                 spinner.setVisibility(View.VISIBLE);
-                UserModel.instance.login(email, password, new UserModel.UserModelLoginListener() {
+                UserModel userModel = UserModel.getInstance();
+                userModel.login(email, password, new UserModel.UserModelLoginListener() {
                     @Override
                     public void onLogin() {
                         spinner.setVisibility(View.GONE);
@@ -126,44 +116,14 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 mLoginButton.setEnabled(true);
-           }});
-
+            }});
     }
 
-    private boolean validateForm() {
-        boolean valid = true;
-
-
-        String email = mEmailField.getText().toString();
-        if (TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
-            valid = false;
-        }else if(!isValidEmailAddress(email)){
-            mEmailField.setError("Invalid Email.");
-            valid = false;
+    public void hideKeyboard(){
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-        else {
-            mEmailField.setError(null);
-        }
-
-        String password = mPasswordField.getText().toString();
-        if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError("Required.");
-            valid = false;
-        } else if (password.length() < 8){
-            mPasswordField.setError("Password Must Be At Least 8 Characters.");
-            valid = false;
-        } else{
-            mPasswordField.setError(null);
-        }
-
-        return valid;
-    }
-
-    public boolean isValidEmailAddress(String email) {
-        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
-        java.util.regex.Matcher m = p.matcher(email);
-        return m.matches();
     }
 }

@@ -6,7 +6,7 @@
     android:background="@drawable/traveler"
     tools:context=".LoginActivity">
 
-        <!--//////////////////Application Title////////////////////////-->
+    <!--//////////////////Application Title////////////////////////-->
     <TextView
         android:id="@+id/login_title_tv"
         android:layout_width="252dp"
@@ -18,9 +18,9 @@
         android:text="@string/app_name"
         android:textColor="@android:color/white"
         android:textSize="48sp" />
+    <!--/////////////////////////////////////////////////////////-->
 
-
-        <!--//////////////////Login Email////////////////////////-->
+    <!--//////////////////Login Email////////////////////////-->
     <EditText
         android:id="@+id/login_email_ed"
         android:textColor="@android:color/white"
@@ -37,7 +37,7 @@
         android:textColorHint="@android:color/white"
         android:drawablePadding="10sp"
         android:singleLine="true"/>
-
+    <!--/////////////////////////////////////////////////////////-->
 
         <!--//////////////////Login Password////////////////////////-->
     <EditText
@@ -55,7 +55,7 @@
         android:singleLine="true"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white" />
-
+    <!--///////////////////////////////////////////////////////////-->
 
     <!--//////////////////Login Button////////////////////////-->
     <Button
@@ -67,7 +67,7 @@
         android:layout_below="@+id/login_password_ed"
         android:layout_centerHorizontal="true"
         android:text="@string/login" />
-
+    <!--///////////////////////////////////////////////////////-->
 
     <!--//////////////////Create Account TextView////////////////////////-->
     <TextView
@@ -78,10 +78,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="117dp"
-        android:text="@string/CreateAccount"
+        android:text="@string/create_account"
         android:textColor="@android:color/white"
         android:textSize="22sp" />
+    <!--////////////////////////////////////////////////////////////////-->
 
+
+    <!--//////////////////Progressbar////////////////////////-->
     <ProgressBar
         android:id="@+id/login_ProgressBar"
         style="@style/Widget.AppCompat.ProgressBar"
@@ -91,5 +94,6 @@
         android:layout_centerInParent="true"
         android:indeterminate="false"
         android:progressBackgroundTint="@android:color/black" />
+    <!--/////////////////////////////////////////////////////////-->
 
 </RelativeLayout>
