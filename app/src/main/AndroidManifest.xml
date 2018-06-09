@@ -33,8 +33,6 @@
         <!--Main Screen Activity-->
 
         <!--Experiences Activity-->
-        <activity android:name=".ExperiencesActivity"
-            android:screenOrientation="portrait"></activity>
         <!--Experiences Activity-->
 
     </application>

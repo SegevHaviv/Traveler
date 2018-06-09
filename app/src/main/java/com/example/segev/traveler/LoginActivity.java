@@ -1,15 +1,11 @@
 package com.example.segev.traveler;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,10 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.segev.traveler.Model.ModelFirebase;
 import com.example.segev.traveler.Model.UserModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 //TODO Upgrading the spinner to alert dialog spinner
 
@@ -45,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         if(UserModel.getInstance().getCurrentUser() != null){
             Log.d(TAG,"User already logged in with " + UserModel.getInstance().getCurrentUser().getEmail());

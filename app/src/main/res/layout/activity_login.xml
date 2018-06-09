@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="207dp"
         android:backgroundTint="@android:color/white"
-        android:drawableStart="@drawable/login"
+        android:drawableStart="@mipmap/ic_login"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
@@ -48,7 +48,7 @@
         android:layout_centerHorizontal="true"
         android:backgroundTint="@android:color/white"
         android:drawablePadding="10sp"
-        android:drawableStart="@drawable/key"
+        android:drawableStart="@mipmap/ic_password"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -60,7 +60,7 @@
     <!--//////////////////Login Button////////////////////////-->
     <Button
         android:id="@+id/login_button"
-        android:background="@drawable/loginandregister"
+        android:background="@drawable/login_register_button"
         android:layout_marginTop="10dp"
         android:layout_width="153dp"
         android:layout_height="wrap_content"
