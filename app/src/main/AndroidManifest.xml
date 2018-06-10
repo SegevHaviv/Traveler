@@ -3,6 +3,7 @@
     package="com.example.segev.traveler">
 
     <application
+        android:name="com.example.segev.traveler.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="Traveler"
@@ -31,9 +32,6 @@
         <activity android:name=".MainScreenActivity"
             android:screenOrientation="portrait"/>
         <!--Main Screen Activity-->
-
-        <!--Experiences Activity-->
-        <!--Experiences Activity-->
 
     </application>
 

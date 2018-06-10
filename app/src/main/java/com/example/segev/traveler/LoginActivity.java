@@ -14,11 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.segev.traveler.Model.UserModel;
+import com.google.firebase.auth.FirebaseUser;
 
 //TODO Upgrading the spinner to alert dialog spinner
 
 public class LoginActivity extends AppCompatActivity {
-    private final static String TAG = LoginActivity.class.getSimpleName();
+    private final static String LOG_TAG = LoginActivity.class.getSimpleName();
 
     //Views
     private EditText mEmailField;
@@ -31,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     //Buttons
 
     //ProgressBar
-    private ProgressBar spinner;
+    private ProgressBar mSpinner;
     //ProgressBar
 
     @Override
@@ -39,43 +40,45 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if(UserModel.getInstance().getCurrentUser() != null){
-            Log.d(TAG,"User already logged in with " + UserModel.getInstance().getCurrentUser().getEmail());
+        checkIfUserIsLoggedIn();
+
+        initializeViews();
+
+        initializeButtons();
+        bindButtons();
+    }
+
+    private void checkIfUserIsLoggedIn(){
+        FirebaseUser currentUser = UserModel.getInstance().getCurrentUser();
+
+        if(currentUser != null){
+            Log.d(LOG_TAG,"User already logged in with " + currentUser.getEmail());
             Intent switchActivityIntent = new Intent(this,MainScreenActivity.class);
             switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(switchActivityIntent);
             finish();
         }
-
-        initializeViews();
-        initializeButtons();
-        bindButtons();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    public void initializeViews(){
+    private void initializeViews(){
         mEmailField = findViewById(R.id.login_email_ed);
         mPasswordField = findViewById(R.id.login_password_ed);
     }
 
-    public void initializeButtons(){
-        spinner = findViewById(R.id.login_ProgressBar);
-        spinner.setVisibility(View.GONE);
+    private void initializeButtons(){
+        mSpinner = findViewById(R.id.login_ProgressBar);
+        mSpinner.setVisibility(View.GONE);
 
         mLoginButton = findViewById(R.id.login_button);
         createAccountText = findViewById(R.id.createAccount);
     }
 
-    public void bindButtons(){
+    private void bindButtons(){
         createAccountText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentToMoveActivity = new Intent(getApplicationContext(),RegisterActivity.class);
-                startActivity(intentToMoveActivity);
+                Intent switchActivityIntent = new Intent(getApplicationContext(),RegisterActivity.class);
+                startActivity(switchActivityIntent);
             }
         });
 
@@ -83,18 +86,18 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mLoginButton.setEnabled(false);
+                mSpinner.setVisibility(View.VISIBLE);
 
                 hideKeyboard();
 
                 String email = mEmailField.getText().toString();
                 String password = mPasswordField.getText().toString();
 
-                spinner.setVisibility(View.VISIBLE);
-                UserModel userModel = UserModel.getInstance();
-                userModel.login(email, password, new UserModel.UserModelLoginListener() {
+                UserModel currentUser = UserModel.getInstance();
+                currentUser.login(email, password, new UserModel.UserModelLoginListener() {
                     @Override
                     public void onLogin() {
-                        spinner.setVisibility(View.GONE);
+                        mSpinner.setVisibility(View.GONE);
                         Intent switchActivityIntent = new Intent(getApplicationContext(),MainScreenActivity.class);
                         switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(switchActivityIntent);
@@ -103,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onLoginFail() {
-                        spinner.setVisibility(View.GONE);
+                        mSpinner.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(),"Login Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -111,11 +114,12 @@ public class LoginActivity extends AppCompatActivity {
             }});
     }
 
-    public void hideKeyboard(){
+    private void hideKeyboard(){
         View view = getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if(imm != null)
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }
