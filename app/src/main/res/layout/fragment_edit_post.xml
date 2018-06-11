@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostNewFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <EditText
+        android:id="@+id/post_edit_description"
+        android:layout_width="386dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="130dp"
+        android:layout_marginTop="22dp"
+        android:hint="Description"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_edit_location" />
+
+    <EditText
+        android:id="@+id/post_edit_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="21dp"
+        android:layout_marginEnd="105dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Location"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/post_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_edit_images" />
+
+    <EditText
+        android:id="@+id/post_edit_images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="105dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="Images"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/post_edit_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_edit_title" />
+
+    <EditText
+        android:id="@+id/post_edit_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:layout_marginEnd="105dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="70dp"
+        android:ems="10"
+        android:hint="Title"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/post_edit_images"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="165dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="130dp"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:text="EDIT POST"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/post_edit_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/post_edit_submit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="49dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="33dp"
+        android:text="SUBMIT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_description"
+        app:layout_constraintVertical_bias="1.0" />
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostDetailsFragment">
+
+
+    <TextView
+        android:id="@+id/post_details_title"
+        android:layout_width="213dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="516dp"
+        android:layout_marginEnd="91dp"
+        android:layout_marginStart="86dp"
+        android:layout_marginTop="27dp"
+        android:text="title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/post_details_description"
+        android:layout_width="362dp"
+        android:layout_height="189dp"
+        android:layout_marginBottom="38dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
+        android:text="Description"
+        app:layout_constraintBottom_toTopOf="@+id/post_details_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_details_title" />
+
+    <TextView
+        android:id="@+id/post_details_location"
+        android:layout_width="194dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="174dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="37dp"
+        android:text="Location"
+        app:layout_constraintBottom_toTopOf="@+id/post_details_images"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_details_description" />
+
+    <TextView
+        android:id="@+id/post_details_images"
+        android:layout_width="351dp"
+        android:layout_height="168dp"
+        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:text="images"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_details_location" />
+
+</android.support.constraint.ConstraintLayout>

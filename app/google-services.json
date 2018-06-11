@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "536867179785",
+    "firebase_url": "https://traveler-9ba43.firebaseio.com",
+    "project_id": "traveler-9ba43",
+    "storage_bucket": "traveler-9ba43.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536867179785:android:1ce9b5b6735e03f3",
+        "android_client_info": {
+          "package_name": "com.example.segev.traveler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "536867179785-22okhvebq7ggu82n2vo564lo8mdner84.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.segev.traveler",
+            "certificate_hash": "8eb1063e0acc12508a0c64b6b5b0e46ce0fa8352"
+          }
+        },
+        {
+          "client_id": "536867179785-sdg8o4b7hhdav7mv04npb506i8bg0po8.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "536867179785-sdg8o4b7hhdav7mv04npb506i8bg0po8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEf7_dr7wsR-L0_vwAJnXqMzKPp5snyo0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "536867179785-sdg8o4b7hhdav7mv04npb506i8bg0po8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

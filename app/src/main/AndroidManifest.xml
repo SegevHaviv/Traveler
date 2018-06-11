@@ -30,6 +30,7 @@
 
         <!--Main Screen Activity-->
         <activity android:name=".MainScreenActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
         <!--Main Screen Activity-->
 
