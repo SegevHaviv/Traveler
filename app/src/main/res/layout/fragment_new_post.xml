@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorOrange"
     tools:context=".PostNewFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,53 +12,58 @@
     <EditText
         android:id="@+id/post_new_description"
         android:layout_width="386dp"
-        android:layout_height="75dp"
-        android:layout_marginBottom="89dp"
+        android:layout_height="115dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@android:color/white"
         android:ems="10"
         android:hint="Description"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/submit_new_btn"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@+id/post_new_location" />
 
     <EditText
         android:id="@+id/post_new_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="53dp"
+        android:layout_marginBottom="23dp"
         android:layout_marginEnd="105dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="38dp"
+        android:backgroundTint="@android:color/white"
         android:ems="10"
         android:hint="Location"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/post_new_images"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/post_new_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_edit_title" />
 
-    <EditText
+    <Button
         android:id="@+id/post_new_images"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginEnd="125dp"
+        android:layout_marginStart="94dp"
+        android:layout_marginTop="17dp"
         android:ems="10"
-        android:hint="Images"
+        android:hint="Upload Images"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/post_new_description"
-        app:layout_constraintEnd_toStartOf="@+id/post_new_description"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/post_new_uploaded_imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_new_description" />
 
     <EditText
         android:id="@+id/post_edit_title"
         android:layout_width="wrap_content"
         android:layout_height="46dp"
-        android:layout_marginBottom="46dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="105dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="53dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:ems="10"
         android:hint="Title"
         android:inputType="textPersonName"
@@ -69,34 +75,64 @@
     <TextView
         android:id="@+id/textView2"
         android:layout_width="165dp"
-        android:layout_height="39dp"
-        android:layout_marginBottom="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:layout_marginEnd="136dp"
         android:layout_marginStart="83dp"
-        android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
-        android:text="ADD POST"
+        android:text="Add Post"
+        android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/post_edit_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/submit_new_btn"
+        android:id="@+id/post_new_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="49dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="148dp"
         android:layout_marginStart="148dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="36dp"
         android:text="SUBMIT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/post_description"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/post_new_uploaded_imageView" />
+
+    <ImageView
+        android:id="@+id/post_new_uploaded_imageView"
+        android:layout_width="353dp"
+        android:layout_height="103dp"
+        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="16dp"
+        android:scaleType="fitXY"
+        android:src="@android:drawable/ic_menu_report_image"
+        app:layout_constraintBottom_toTopOf="@+id/post_new_submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_new_images" />
+
+    <ProgressBar
+        android:id="@+id/post_new_progressbar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:indeterminate="false"
+        android:progressBackgroundTint="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/post_new_images"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/post_new_description"
+        app:layout_constraintTop_toBottomOf="@+id/post_new_location" />
+
 </android.support.constraint.ConstraintLayout>

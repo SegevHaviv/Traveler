@@ -1,16 +1,22 @@
 package com.example.segev.traveler;
 
+import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,14 +34,24 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
     public static final String LOG_TAG = ExperiencesFragment.class.getSimpleName();
 
     PostListViewModel postListViewModel;
-
     private RecyclerView mRecyclerView;
     private PostAdapter mAdapter;
+
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM3 = "param3";
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_experiences, container, false);
 
         // Set the RecyclerView to its corresponding view
@@ -64,8 +80,8 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onStart() {
+        super.onStart();
         postListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
         postListViewModel.getData().observe(this, new Observer<List<Post>>() {
             @Override
@@ -73,6 +89,12 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
                 mAdapter.setTasks(posts);
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
     }
 
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- This linear layout contains a single item displayed in the MainActivity -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,56 +12,38 @@
     android:paddingTop="8dp"
     tools:context="com.example.segev.traveler.MainScreenActivity">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <!-- TextView that displays the description -->
-
-        <TextView
-            android:id="@+id/post_edit_title"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/primary_text_light"
-            tools:text="Title" />
-
-        <TextView
-            android:id="@+id/post_description"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/primary_text_light"
-            tools:text="Description" />
-
-        <TextView
-            android:id="@+id/post_edit_location"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/primary_text_light"
-            tools:text="Location" />
-
-        <TextView
-            android:id="@+id/post_edit_images"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/primary_text_light"
-            tools:text="Image" />
-
-        <TextView
-            android:id="@+id/post_UpdatedAt"
-            style="@style/TextAppearance.AppCompat.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/primary_text_light"
-            tools:text="11/11/1111" />
-
-    </LinearLayout>
-
     <!-- A priority circle that is colored in programmatically in the adapter code -->
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/post_layout_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        app:srcCompat="@android:drawable/ic_menu_report_image" />
+
+    <TextView
+        android:id="@+id/post_layout_title"
+        android:layout_width="354dp"
+        android:layout_height="26dp"
+        android:layout_alignStart="@+id/post_layout_imageView"
+        android:layout_below="@+id/post_layout_imageView"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/colorOrange"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/post_layout_location"
+        android:layout_width="366dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/post_layout_title"
+        android:layout_marginEnd="2dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="15sp" />
+
+</RelativeLayout>

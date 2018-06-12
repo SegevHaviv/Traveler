@@ -1,9 +1,15 @@
 package com.example.segev.traveler;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -20,6 +26,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -27,6 +34,8 @@ import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.UserModel;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -48,19 +57,12 @@ public class MainScreenActivity extends AppCompatActivity {
     private NavigationView nav_view;
     //Views
 
+    final int REQUEST_WRITE_STORAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-
-//        PostAsyncDao.getAllPosts(new PostAsyncDao.PostAsyncDaoListener<List<Post>>() {
-//            @Override
-//            public void onComplete(List<Post> data) {
-//                for(Post post : data){
-//                    Model.getInstance().insertPost(post);
-//                }
-//            }
-//        });
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,25 +79,44 @@ public class MainScreenActivity extends AppCompatActivity {
         setupDrawerContent(nav_view);
         initializeHeaderEmail(nav_view);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_STORAGE);
+            }
+        }
+
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             Fragment fragment = new HomeFragment();
 
             transaction.replace(R.id.flContent, fragment, "Home");
-//            transaction.addToBackStack("Home");
+            //transaction.addToBackStack("Home");
             transaction.commit();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_WRITE_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
         }
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer. TODO Check if it's necessary
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                mDrawerLayout.openDrawer(GravityCompat.START);
-//                return true;
-//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -126,6 +147,12 @@ public class MainScreenActivity extends AppCompatActivity {
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
 
+//        //Clearing the stack but the home
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 1; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
+
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass = null;
@@ -151,6 +178,8 @@ public class MainScreenActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_saved:
+                movingFragment = true;
+                fragmentClass = SavedFragment.class;
                 break;
 
             case R.id.nav_settings:
@@ -172,7 +201,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
             // Insert the fragment by replacing any existing fragment
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.flContent, fragment).commit();
         }
     }
 

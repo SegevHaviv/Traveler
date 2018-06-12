@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.segev.traveler">
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:name="com.example.segev.traveler.MyApplication"
+
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="Traveler"
@@ -30,7 +32,7 @@
 
         <!--Main Screen Activity-->
         <activity android:name=".MainScreenActivity"
-            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:screenOrientation="portrait"/>
         <!--Main Screen Activity-->
 

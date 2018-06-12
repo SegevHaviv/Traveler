@@ -29,7 +29,6 @@ public abstract class AppLocalDb extends RoomDatabase {
                         .build();
             }
         }
-        Log.d(LOG_TAG,"Getting the database instance");
         return sInstance;
     }
 

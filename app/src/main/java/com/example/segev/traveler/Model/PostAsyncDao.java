@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import com.example.segev.traveler.MyApplication;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class PostAsyncDao {

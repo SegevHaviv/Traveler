@@ -1,15 +1,19 @@
 package com.example.segev.traveler.Model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.segev.traveler.R;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -18,7 +22,7 @@ import java.util.Locale;
  * This PostAdapter creates and binds ViewHolders, that hold the posts,
  * to a RecyclerView to efficiently display data.
  */
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> implements Serializable{
     private static final String LOG_TAG = PostAdapter.class.getSimpleName();
 
     // Constant for date format
@@ -64,22 +68,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
      * @param position The position of the data in the Cursor
      */
     @Override
-    public void onBindViewHolder(PostViewHolder holder, int position) {
+    public void onBindViewHolder(final PostViewHolder holder, int position) {
         // Determine the values of the wanted data
         Post postEntry = mPostEntries.get(position);
 
+
         String title = postEntry.getTitle();
-        String description = postEntry.getDescription();
         String location = postEntry.getLocation();
-        String image = postEntry.getImage();
-        String updatedAt = dateFormat.format(postEntry.getUpdatedAt());
+        String imageURL = postEntry.getImage();
+
+        Model.getInstance().getImage(imageURL, new Model.GetImageListener() {
+            @Override
+            public void onDone(Bitmap imageBitmap) {
+                holder.mPostImageView.setImageBitmap(imageBitmap);
+            }
+        });
 
         //Set values
-        holder.postTitleView.setText(title);
-        holder.postDescriptionView.setText(description);
-        holder.postLocationView.setText(location);
-        holder.postImageView.setText(image);
-        holder.postUpdatedAtView.setText(updatedAt);
+        holder.mPostTitleField.setText(title);
+        holder.mPostLocationField.setText(location);
+
     }
 
     /**
@@ -110,11 +118,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Class variables for the task description and priority TextViews
-        TextView postTitleView;
-        TextView postDescriptionView;
-        TextView postLocationView;
-        TextView postUpdatedAtView;
-        TextView postImageView;
+        TextView mPostTitleField;
+        TextView mPostLocationField;
+        ImageView mPostImageView;
 
         /**
          * Constructor for the PostViewHolders.
@@ -124,11 +130,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public PostViewHolder(View itemView) {
             super(itemView);
 
-            postTitleView = itemView.findViewById(R.id.post_edit_title);
-            postDescriptionView = itemView.findViewById(R.id.post_description);
-            postLocationView = itemView.findViewById(R.id.post_edit_location);
-            postUpdatedAtView = itemView.findViewById(R.id.post_UpdatedAt);
-            postImageView = itemView.findViewById(R.id.post_edit_images);
+            mPostTitleField = itemView.findViewById(R.id.post_layout_title);
+            mPostLocationField = itemView.findViewById(R.id.post_layout_location);
+            mPostImageView = itemView.findViewById(R.id.post_layout_imageView);
 
             itemView.setOnClickListener(this);
         }

@@ -5,12 +5,13 @@ import android.arch.lifecycle.MutableLiveData;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.URLUtil;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
+
 
 import com.example.segev.traveler.MyApplication;
+import com.example.segev.traveler.SavedFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -121,97 +122,106 @@ public class Model {
 
     public void deletePost(final Post post){
         modelFirebase.deletePost(post);
+    } // check if exists in sharedpreferences, if does, remove it
+
+    public Post getPostById(int id, final SavedFragment.onGotPostById listener){
+        PostAsyncDao.getPostById(new PostAsyncDao.PostAsyncDaoListener<Post>() {
+            @Override
+            public void onComplete(Post data) {
+                listener.onComplete(data);
+            }
+        },id);
+        return null;
     }
 
-//    public void getUserByID(int id){
-//
-//    }
-
 
 
     ////////////////////////////////////////////////////////
-    //  HAndle Image Files
+    //  Handle Image Files                                //
     ////////////////////////////////////////////////////////
 
 
 
-//    public interface SaveImageListener{
-//        void onDone(String url);
-//    }
-//
-////    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
-////        modelFirebase.saveImage(imageBitmap,listener);
-////    }
-//
-//
-//
-//    public interface GetImageListener{
-//        void onDone(Bitmap imageBitmap);
-//    }
-//    public void getImage(final String url, final GetImageListener listener ){
-//        String localFileName = URLUtil.guessFileName(url, null, null);
-//        final Bitmap image = loadImageFromFile(localFileName);
-//        if (image == null) {                                      //if image not found - try downloading it from parse
-//            modelFirebase.getImage(url, new GetImageListener() {
-//                @Override
-//                public void onDone(Bitmap imageBitmap) {
-//                    if (imageBitmap == null) {
-//                        listener.onDone(null);
-//                    }else {
-//                        //2.  save the image localy
-//                        String localFileName = URLUtil.guessFileName(url, null, null);
-//                        Log.d("TAG", "save image to cache: " + localFileName);
-//                        saveImageToFile(imageBitmap, localFileName);
-//                        //3. return the image using the listener
-//                        listener.onDone(imageBitmap);
-//                    }
-//                }
-//            });
-//        }else {
-//            Log.d("TAG","OK reading cache image: " + localFileName);
-//            listener.onDone(image);
-//        }
-//    }
-//
-//    // Store / Get from local mem
-//    private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
-//        if (imageBitmap == null) return;
-//        try {
-//            File dir = Environment.getExternalStoragePublicDirectory(
-//                    Environment.DIRECTORY_PICTURES);
-//            if (!dir.exists()) {
-//                dir.mkdir();
-//            }
-//            File imageFile = new File(dir,imageFileName);
-//            imageFile.createNewFile();
-//
-//            OutputStream out = new FileOutputStream(imageFile);
-//            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-//            out.close();
-//
-//            //addPicureToGallery(imageFile);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private Bitmap loadImageFromFile(String imageFileName){
-//        Bitmap bitmap = null;
-//        try {
-//            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-//            File imageFile = new File(dir,imageFileName);
-//            InputStream inputStream = new FileInputStream(imageFile);
-//            bitmap = BitmapFactory.decodeStream(inputStream);
-//            Log.d("tag","got image from cache: " + imageFileName);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return bitmap;
-//    }
+    public interface SaveImageListener{
+        void onDone(String url);
+    }
+
+    public void saveImage(Bitmap imageBitmap, SaveImageListener listener) {
+        modelFirebase.saveImage(imageBitmap,listener);
+    }
+
+
+
+    public interface GetImageListener{
+        void onDone(Bitmap imageBitmap);
+    }
+    public void getImage(final String url, final GetImageListener listener ){
+        if(TextUtils.isEmpty(url))
+            return;
+
+        String localFileName = URLUtil.guessFileName(url, null, null);
+        final Bitmap image = loadImageFromFile(localFileName);
+        if (image == null) {                                      //if image not found - try downloading it from parse
+            modelFirebase.getImage(url, new GetImageListener() {
+                @Override
+                public void onDone(Bitmap imageBitmap) {
+                    if (imageBitmap == null) {
+                        listener.onDone(null);
+                    }else {
+                        //2.  save the image localy
+                        String localFileName = URLUtil.guessFileName(url, null, null);
+                        Log.d("TAG", "save image to cache: " + localFileName);
+                        saveImageToFile(imageBitmap, localFileName);
+                        //3. return the image using the listener
+                        listener.onDone(imageBitmap);
+                    }
+                }
+            });
+        }else {
+            Log.d("TAG","OK reading cache image: " + localFileName);
+            listener.onDone(image);
+        }
+    }
+
+    // Store / Get from local mem
+    private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
+        if (imageBitmap == null) return;
+        try {
+            File dir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            File imageFile = new File(dir,imageFileName);
+            imageFile.createNewFile();
+
+            OutputStream out = new FileOutputStream(imageFile);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+
+            //addPicureToGallery(imageFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Bitmap loadImageFromFile(String imageFileName){
+        Log.d(LOG_TAG,"name : " +imageFileName);
+        Bitmap bitmap = null;
+        try {
+            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            File imageFile = new File(dir,imageFileName);
+            InputStream inputStream = new FileInputStream(imageFile);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+            Log.d("tag","got image from cache: " + imageFileName);
+        } catch (IOException e) {
+            Log.d(LOG_TAG,"File Not Found in Cache");
+            bitmap = null;
+        }
+        return bitmap;
+    }
 
 }
 
