@@ -64,6 +64,9 @@ public class MainScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
+        setTitle("Traveler");
+
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -78,6 +81,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
         setupDrawerContent(nav_view);
         initializeHeaderEmail(nav_view);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
@@ -147,11 +151,11 @@ public class MainScreenActivity extends AppCompatActivity {
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
 
-//        //Clearing the stack but the home
-        FragmentManager fm = getSupportFragmentManager();
-        for(int i = 1; i < fm.getBackStackEntryCount(); ++i) {
-            fm.popBackStack();
-        }
+////        //Clearing the stack but the home
+//        FragmentManager fm = getSupportFragmentManager();
+//        for(int i = 1; i < fm.getBackStackEntryCount(); ++i) {
+//            fm.popBackStack();
+//        }
 
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
@@ -192,7 +196,6 @@ public class MainScreenActivity extends AppCompatActivity {
         }
 
         if(movingFragment){
-            setTitle(menuItem.getTitle());
             try {
                  fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {

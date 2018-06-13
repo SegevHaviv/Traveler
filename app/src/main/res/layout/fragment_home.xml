@@ -10,14 +10,12 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:id="@+id/textView"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/home_viewpager"
         android:layout_width="407dp"
-        android:layout_height="0dp"
+        android:layout_height="241dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/colorOrange"
         android:gravity="center_vertical"
-        android:text="TextView Recommendations"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/autoCompleteTextView"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,14 +25,31 @@
         android:id="@+id/autoCompleteTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="292dp"
+        android:layout_marginBottom="260dp"
         android:layout_marginEnd="93dp"
         android:layout_marginStart="93dp"
+        android:layout_marginTop="8dp"
         android:drawableStart="@drawable/ic_search"
         android:hint="@string/where_to"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/home_saved"
+        android:layout_width="147dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="67dp"
+        android:layout_marginEnd="129dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="177dp"
+        android:background="@color/colorOrange"
+        android:textColor="@android:color/white"
+        android:text="@string/saved"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView" />
 
 </android.support.constraint.ConstraintLayout>
