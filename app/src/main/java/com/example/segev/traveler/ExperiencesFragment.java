@@ -20,7 +20,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.PostAdapter;
 import com.example.segev.traveler.Model.PostAsyncDao;
@@ -36,17 +38,6 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
     PostListViewModel postListViewModel;
     private RecyclerView mRecyclerView;
     private PostAdapter mAdapter;
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private static final String ARG_PARAM3 = "param3";
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
 
     @Override
@@ -76,12 +67,14 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
             }
         });
 
+
+
         return rootView;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onAttach(Context context) {
+        super.onAttach(context);
         postListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
         postListViewModel.getData().observe(this, new Observer<List<Post>>() {
             @Override
@@ -90,13 +83,6 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
             }
         });
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-    }
-
 
     private void onAddPostClicked(){
         Fragment fragment = new PostNewFragment();
@@ -107,22 +93,19 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
 
     // Gets the post from the local DB and opening a PostDetailsFragment with it.
     @Override
-    public void onItemClickListener(int itemId) {
-        //create spinner
-
-        // it must be in the localdb since it's in the list
-        PostAsyncDao.getPostById(new PostAsyncDao.PostAsyncDaoListener<Post>() {
+    public void onItemClickListener(int itemId) { // check if a spinner isn needed
+        
+        Model.getInstance().getPostById(itemId, new SavedFragment.onGotPostById() {
             @Override
-            public void onComplete(Post data) {
-                //REMOVE SPINNER
+            public void onComplete(Post post) {
                 Fragment fragment = new PostDetailsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("Post",data);
+                bundle.putSerializable("Post",post);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.flContent, fragment).commit();
             }
-        },itemId);
+        });
     }
 }
 

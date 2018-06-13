@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.URLUtil;
@@ -47,9 +48,7 @@ public class Model {
     }
 
 
-    public void cancelGetAllPosts() {
-        modelFirebase.cancelGetAllPosts();
-    }
+
 
 
 
@@ -134,12 +133,13 @@ public class Model {
         return null;
     }
 
+    private void cancelGetAllPosts() {
+        modelFirebase.cancelGetAllPosts();
+    }
 
 
-    ////////////////////////////////////////////////////////
-    //  Handle Image Files                                //
-    ////////////////////////////////////////////////////////
 
+////////////////////// Images //////////////////////////////
 
 
     public interface SaveImageListener{
@@ -185,6 +185,7 @@ public class Model {
 
     // Store / Get from local mem
     private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
+        Log.d(LOG_TAG,"SAVE IMAGE TO FILE CALLED");
         if (imageBitmap == null) return;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(
@@ -199,7 +200,9 @@ public class Model {
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
 
-            //addPicureToGallery(imageFile);
+
+
+            addPictureToGallery(imageBitmap);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -207,8 +210,13 @@ public class Model {
         }
     }
 
+    private void addPictureToGallery(Bitmap imageToSave) {
+        Date currDate = new Date();
+        String currentDateInString = String.valueOf(currDate.getTime());
+        MediaStore.Images.Media.insertImage(MyApplication.context.getContentResolver(), imageToSave, currentDateInString , currentDateInString);
+    }
+
     private Bitmap loadImageFromFile(String imageFileName){
-        Log.d(LOG_TAG,"name : " +imageFileName);
         Bitmap bitmap = null;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
@@ -222,7 +230,6 @@ public class Model {
         }
         return bitmap;
     }
-
 }
 
 

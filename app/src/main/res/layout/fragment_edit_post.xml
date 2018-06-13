@@ -61,10 +61,10 @@
         app:layout_constraintBottom_toTopOf="@+id/post_edit_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/post_edit_title" />
+        app:layout_constraintTop_toBottomOf="@+id/post_new_title" />
 
     <EditText
-        android:id="@+id/post_edit_title"
+        android:id="@+id/post_new_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
@@ -92,7 +92,7 @@
         android:textColor="@android:color/white"
         android:text="EDIT POST"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/post_edit_title"
+        app:layout_constraintBottom_toTopOf="@+id/post_new_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"

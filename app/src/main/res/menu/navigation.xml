@@ -14,20 +14,20 @@
         android:title="@string/trips_Experiences"
         android:icon="@mipmap/experiences"/>
 
-    <item
-        android:id="@+id/nav_equipment"
-        android:title="@string/equipment_sale"
-        android:icon="@mipmap/equipment"/>
+    <!--<item-->
+        <!--android:id="@+id/nav_equipment"-->
+        <!--android:title="@string/equipment_sale"-->
+        <!--android:icon="@mipmap/equipment"/>-->
 
-    <item
-        android:id="@+id/nav_articles"
-        android:title="@string/articles"
-        android:icon="@mipmap/article"/>
+    <!--<item-->
+        <!--android:id="@+id/nav_articles"-->
+        <!--android:title="@string/articles"-->
+        <!--android:icon="@mipmap/article"/>-->
 
-    <item
-        android:id="@+id/nav_voucher"
-        android:title="@string/vouchers"
-        android:icon="@mipmap/vouchers"/>
+    <!--<item-->
+        <!--android:id="@+id/nav_voucher"-->
+        <!--android:title="@string/vouchers"-->
+        <!--android:icon="@mipmap/vouchers"/>-->
 
         <item
             android:id="@+id/nav_saved"

@@ -168,14 +168,14 @@ public class MainScreenActivity extends AppCompatActivity {
                 fragmentClass = ExperiencesFragment.class;
                 break;
 
-            case R.id.nav_equipment:
-                break;
-
-            case R.id.nav_articles:
-                break;
-
-            case R.id.nav_voucher:
-                break;
+//            case R.id.nav_equipment:
+//                break;
+//
+//            case R.id.nav_articles:
+//                break;
+//
+//            case R.id.nav_voucher:
+//                break;
 
             case R.id.nav_saved:
                 movingFragment = true;

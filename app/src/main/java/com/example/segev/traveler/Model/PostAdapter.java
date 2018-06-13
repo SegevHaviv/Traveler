@@ -115,7 +115,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     // Inner class for creating ViewHolders
-    class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Class variables for the task description and priority TextViews
         TextView mPostTitleField;
@@ -136,6 +136,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             itemView.setOnClickListener(this);
         }
+
+        public String getViewHolderPostIdByPos(int pos){
+            if(pos > mPostEntries.size())
+                return "";
+
+            Post post = mPostEntries.get(pos);
+
+            if(post != null){
+                return post.getId();
+            }
+            return "";
+        }
+
         @Override
         public void onClick(View view) {
             int elementId = Integer.parseInt(mPostEntries.get(getAdapterPosition()).getId());

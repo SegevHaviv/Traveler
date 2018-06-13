@@ -54,7 +54,7 @@ public class PostEditFragment extends Fragment {
     }
 
     private void initializeViews(View rootView) {
-        mTitle_Field = rootView.findViewById(R.id.post_edit_title);
+        mTitle_Field = rootView.findViewById(R.id.post_new_title);
         mLocation_Field = rootView.findViewById(R.id.post_edit_location);
         mDescription_Field = rootView.findViewById(R.id.post_edit_description);
         mImages_Field = rootView.findViewById(R.id.post_edit_images);
@@ -67,6 +67,7 @@ public class PostEditFragment extends Fragment {
     }
 
     private void onSubmitButtonClicked() {
+        mSubmit_Btn.setEnabled(false);
         String title = mTitle_Field.getText().toString();
         String description = mDescription_Field.getText().toString();
         String location = mLocation_Field.getText().toString();
@@ -80,6 +81,7 @@ public class PostEditFragment extends Fragment {
         mPost.setUpdatedAt(currentDate);
 
         Model.getInstance().insertPost(mPost);
+        mSubmit_Btn.setEnabled(true);
 
         getActivity().getSupportFragmentManager().popBackStack();
     }

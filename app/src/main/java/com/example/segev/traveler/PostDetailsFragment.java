@@ -2,11 +2,15 @@ package com.example.segev.traveler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +28,9 @@ import com.example.segev.traveler.Model.UserModel;
 
 //ADD A IF(SAVEDINSTANCE STATE == NULL) CHECK LIKE ELIAV DID
 
+/**
+ * Takes on savedInstanceState bundle a boolean that says if to present options menu or not
+ */
 public class PostDetailsFragment extends Fragment {
     private static final String LOG_TAG = PostDetailsFragment.class.getSimpleName();
 
@@ -31,41 +39,69 @@ public class PostDetailsFragment extends Fragment {
     private TextView mTitle_Field;
     private TextView mLocation_Field;
     private TextView mDescription_Field;
-    private TextView mImages_Field;
+    private ImageView mImages_View;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView =  inflater.inflate(R.layout.fragment_post_details, container, false);
+        final View rootView =  inflater.inflate(R.layout.fragment_post_details, container, false);
 
         mPost = (Post)getArguments().getSerializable("Post");
 
         initializeViews(rootView);
 
+        mDescription_Field.setMovementMethod(new ScrollingMovementMethod());
 
-        if(mPost.getUserWhoPostedID().equals(UserModel.getInstance().getCurrentUser().getUid())) // Means he's the owner of the post.
+        int stackCount = getActivity().getSupportFragmentManager().getBackStackEntryCount();
+        String lastTag = getActivity().getSupportFragmentManager().getBackStackEntryAt(stackCount -1).getName();
+
+        if(!TextUtils.isEmpty(lastTag)) {
+            if (lastTag.equals("Saved")) // Means we came from the saved tab
+                setHasOptionsMenu(false);
+        }else{
             setHasOptionsMenu(true);
+        }
+
 
         return rootView;
     }
+
 
     private void initializeViews(View rootView){
         mTitle_Field = rootView.findViewById(R.id.post_details_title);
         mLocation_Field = rootView.findViewById(R.id.post_details_location);
         mDescription_Field = rootView.findViewById(R.id.post_details_description);
-        mImages_Field = rootView.findViewById(R.id.post_details_images);
+        mImages_View = rootView.findViewById(R.id.post_details_image);
 
         mTitle_Field.setText(mPost.getTitle());
         mLocation_Field.setText(mPost.getLocation());
         mDescription_Field.setText(mPost.getDescription());
-        mImages_Field.setText(mPost.getImage());
+
+
+        Model.getInstance().getImage(mPost.getImage(), new Model.GetImageListener() {
+            @Override
+            public void onDone(Bitmap imageBitmap) {
+                mImages_View.setImageBitmap(imageBitmap);
+            }
+        });
+
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
         inflater.inflate(R.menu.post_options, menu);
+        if(!(mPost.getUserWhoPostedID().equals(UserModel.getInstance().getCurrentUser().getUid()))){ // not owner of post
+            menu.getItem(0).setVisible(false); // Edit
+            menu.getItem(1).setVisible(false); // Delete
+        }
+
+
+
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -112,7 +148,7 @@ public class PostDetailsFragment extends Fragment {
         Toast.makeText(getActivity(),"Saved",Toast.LENGTH_SHORT).show();
     }
 
-    private void onDeleteButtonClicked(){ // TODO spinner?
+    private void onDeleteButtonClicked(){
         Model.getInstance().deletePost(mPost);
         getActivity().getSupportFragmentManager().popBackStack();
     }

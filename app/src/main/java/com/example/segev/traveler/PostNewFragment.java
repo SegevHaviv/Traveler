@@ -73,19 +73,21 @@ public class PostNewFragment extends Fragment {
         mDescription_Field = rootView.findViewById(R.id.post_new_description);
         mImages_Field = rootView.findViewById(R.id.post_new_images);
         mLocation_Field = rootView.findViewById(R.id.post_new_location);
-        mTitle_Field = rootView.findViewById(R.id.post_edit_title);
+        mTitle_Field = rootView.findViewById(R.id.post_new_title);
         mSubmit_Btn = rootView.findViewById(R.id.post_new_submit);
+
         mSpinner_Bar = rootView.findViewById(R.id.post_new_progressbar);
+        mSpinner_Bar.setVisibility(View.GONE);
     }
 
     private void onSubmitButtonClicked() {
-        //TODO activate spinner
+        mSubmit_Btn.setEnabled(false);
+        mSpinner_Bar.setVisibility(View.VISIBLE);
         if(!validateInput())
             return;
 
         final String userIdWhoPosted = UserModel.getInstance().getCurrentUser().getUid();
         final String title = mTitle_Field.getText().toString();
-       // String image = mImages_Field.getText().toString();
         final String location = mLocation_Field.getText().toString();
         final String description = mDescription_Field.getText().toString();
         final Date currentDate = new Date();
@@ -94,7 +96,8 @@ public class PostNewFragment extends Fragment {
         Model.getInstance().saveImage(mPhotos, new Model.SaveImageListener() {
             @Override
             public void onDone(String url) {
-                //TODO deactivate spinner
+                mSpinner_Bar.setVisibility(View.GONE);
+                mSubmit_Btn.setEnabled(true);
                 if(url != null) {
                     Post postToInsert = new Post(userIdWhoPosted, currentDate, title, location, description,url); // TODO CHANGE INSERTED IMAGE
                     Model.getInstance().insertPost(postToInsert);
