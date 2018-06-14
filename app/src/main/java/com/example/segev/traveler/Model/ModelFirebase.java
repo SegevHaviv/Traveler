@@ -23,6 +23,7 @@ import java.util.List;
 // MIGHT CAUSE PROBLEM WHEN CHANGED DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(); TO MEMBER
 public class ModelFirebase {
     private static final String TABLE_NAME = "posts";
+    private static final String LOG_TAG = ModelFirebase.class.getSimpleName();
     private ValueEventListener eventListener;
 
     private static final Object LOCK = new Object();
@@ -57,6 +58,8 @@ public class ModelFirebase {
     public void getAllPosts(final GetAllPostsListener listener) {
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(TABLE_NAME);
 
+
+
         eventListener = mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -71,6 +74,27 @@ public class ModelFirebase {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    public void getPostsByLocation(final String location,final GetAllPostsListener listener){
+
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(TABLE_NAME);
+
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                LinkedList<Post> postList = new LinkedList<>();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        Post post = data.getValue(Post.class);
+                        if(post.getLocation().equals(location))
+                            postList.add(post);
+                    }
+                    listener.onSuccess(postList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
         });
     }
 

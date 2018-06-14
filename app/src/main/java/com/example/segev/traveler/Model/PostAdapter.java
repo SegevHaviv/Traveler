@@ -69,6 +69,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
      */
     @Override
     public void onBindViewHolder(final PostViewHolder holder, int position) {
+
         // Determine the values of the wanted data
         Post postEntry = mPostEntries.get(position);
 

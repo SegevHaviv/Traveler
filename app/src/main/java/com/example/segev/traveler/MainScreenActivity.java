@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
+import com.example.segev.traveler.Model.PostAsyncDao;
 import com.example.segev.traveler.Model.UserModel;
 
 import java.io.FileNotFoundException;
@@ -65,6 +66,18 @@ public class MainScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_screen);
 
         setTitle("Traveler");
+
+        PostAsyncDao.getAllPosts(new PostAsyncDao.PostAsyncDaoListener<List<Post>>() {
+            @Override
+            public void onComplete(List<Post> data) {
+                PostAsyncDao.deleteAllPosts(new PostAsyncDao.PostAsyncDaoListener<Boolean>() {
+                    @Override
+                    public void onComplete(Boolean data) {
+                        Log.d(LOG_TAG,"done");
+                    }
+                },data);
+            }
+        });
 
 
         toolbar = findViewById(R.id.toolbar);

@@ -1,8 +1,11 @@
 package com.example.segev.traveler;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,9 +23,11 @@ import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.PostAdapter;
 import com.example.segev.traveler.Model.PostAsyncDao;
+import com.example.segev.traveler.Model.PostListViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
@@ -32,6 +37,8 @@ public class SavedFragment extends Fragment implements PostAdapter.ItemClickList
 
     RecyclerView mRecyclerView;
     PostAdapter mAdapter;
+
+    PostListViewModel postViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,28 +84,43 @@ public class SavedFragment extends Fragment implements PostAdapter.ItemClickList
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        final ArrayList<Post> postsToPresent = new ArrayList<>();
-        final String[] savedPosts = getSavedPosts();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        postViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
+        postViewModel.getData().observe(this, new Observer<List<Post>>() {
+            @Override
+            public void onChanged(@Nullable List<Post> posts) {
+                String[] savedposts = getSavedPosts();
+                if(savedposts != null){
+                ArrayList<String> savedPostsId = new ArrayList<>(Arrays.asList(savedposts));
+                ArrayList<String> leftPostsId = new ArrayList<>();
+                LinkedList<Post> leftPosts = new LinkedList<>();
+                // check if the post wasn't deleted already
 
-        if(savedPosts != null) {
-            for (final String postId : savedPosts) {
-                Model.getInstance().getPostById(Integer.parseInt(postId), new onGotPostById() {
-                    @Override
-                    public void onComplete(Post post) {
-                        Log.d(LOG_TAG, getSavedPosts().length + "");
-                        if (post != null) {
-                            postsToPresent.add(post);
-                            mAdapter.setTasks(postsToPresent);
-                        } else {
-                            // needs to be removed from the sharedpreferences
-                            removeFromSharedPreferences(postId);
+                for (Post post : posts) {
+                    if (savedPostsId.contains(post.getId())) { // not a post in shared preferences
+                        leftPosts.add(post);
+                    }
+                }
+
+                if (leftPosts.size() != savedPostsId.size()) {// means that one of the saved posts was added / removed.
+                    for (int i = 0; i < leftPosts.size(); i++) {
+                        leftPostsId.add(leftPosts.get(i).getId());
+                    }
+
+                    for (String savedpostId : savedPostsId) {
+                        if (!leftPostsId.contains(savedpostId)) {
+                            removeFromSharedPreferences(savedpostId);
                         }
                     }
-                });
+                }
+
+                mAdapter.setTasks(leftPosts);
+
             }
         }
+        });
+
     }
 
     private void removeFromSharedPreferences(String idToRemove){

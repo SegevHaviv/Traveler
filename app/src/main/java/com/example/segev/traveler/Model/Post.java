@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Post implements Serializable {
+public class Post implements Serializable{
     @PrimaryKey
     @NonNull
     private String id;
