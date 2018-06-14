@@ -18,17 +18,17 @@
     <ImageView
         android:id="@+id/post_layout_imageView"
         android:layout_width="match_parent"
-        android:layout_height="175dp"
+        android:layout_height="196dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:scaleType="fitXY"
         android:background="@drawable/gradient"
+        android:scaleType="fitXY"
         app:srcCompat="@android:drawable/ic_menu_report_image" />
 
     <TextView
         android:id="@+id/post_layout_title"
         android:layout_width="354dp"
-        android:layout_height="26dp"
+        android:layout_height="wrap_content"
         android:layout_alignStart="@+id/post_layout_imageView"
         android:layout_below="@+id/post_layout_imageView"
         android:ellipsize="end"
@@ -38,14 +38,22 @@
 
     <TextView
         android:id="@+id/post_layout_location"
-        android:layout_width="366dp"
-        android:layout_height="36dp"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/post_layout_title"
-        android:layout_marginEnd="2dp"
+        android:layout_marginEnd="223dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@android:color/darker_gray"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/post_layout_user_email"
+        android:layout_width="147dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/post_layout_imageView"
+        android:layout_below="@+id/post_layout_title"
         android:textSize="15sp" />
 
 </RelativeLayout>

@@ -1,32 +1,26 @@
-package com.example.segev.traveler;
+package com.example.segev.traveler.Fragments;
 
-import android.Manifest;
+import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.PostAdapter;
-import com.example.segev.traveler.Model.PostAsyncDao;
 import com.example.segev.traveler.Model.PostListViewModel;
+import com.example.segev.traveler.R;
 
 import java.util.List;
 
@@ -44,6 +38,9 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_experiences, container, false);
+
+        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
+                "", true);
 
         // Set the RecyclerView to its corresponding view
         mRecyclerView = rootView.findViewById(R.id.recyclerViewPosts);
@@ -69,12 +66,13 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
 
 
 
+        dialog.dismiss();
         return rootView;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         postListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
         postListViewModel.getData().observe(this, new Observer<List<Post>>() {
             @Override

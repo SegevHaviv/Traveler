@@ -77,6 +77,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String title = postEntry.getTitle();
         String location = postEntry.getLocation();
         String imageURL = postEntry.getImage();
+        String email = postEntry.getPostingUserEmail();
 
         Model.getInstance().getImage(imageURL, new Model.GetImageListener() {
             @Override
@@ -88,6 +89,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //Set values
         holder.mPostTitleField.setText(title);
         holder.mPostLocationField.setText(location);
+        holder.mPostEmail.setText(email);
 
     }
 
@@ -122,6 +124,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView mPostTitleField;
         TextView mPostLocationField;
         ImageView mPostImageView;
+        TextView mPostEmail;
 
         /**
          * Constructor for the PostViewHolders.
@@ -134,6 +137,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             mPostTitleField = itemView.findViewById(R.id.post_layout_title);
             mPostLocationField = itemView.findViewById(R.id.post_layout_location);
             mPostImageView = itemView.findViewById(R.id.post_layout_imageView);
+            mPostEmail = itemView.findViewById(R.id.post_layout_user_email);
 
             itemView.setOnClickListener(this);
         }

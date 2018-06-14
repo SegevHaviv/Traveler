@@ -1,5 +1,7 @@
 package com.example.segev.traveler;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -27,13 +29,12 @@ public class LoginActivity extends AppCompatActivity {
     private TextView createAccountText;
     //Views
 
+
+    private Activity activity;
     //Buttons
     private Button mLoginButton;
     //Buttons
 
-    //ProgressBar
-    private ProgressBar mSpinner;
-    //ProgressBar
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         checkIfUserIsLoggedIn();
 
         initializeViews();
+        activity = this;
 
         initializeButtons();
         bindButtons();
@@ -66,8 +68,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initializeButtons(){
-        mSpinner = findViewById(R.id.login_ProgressBar);
-        mSpinner.setVisibility(View.GONE);
 
         mLoginButton = findViewById(R.id.login_button);
         createAccountText = findViewById(R.id.createAccount);
@@ -85,9 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLoginButton.setEnabled(false);
-                mSpinner.setVisibility(View.VISIBLE);
-
+                final ProgressDialog dialog = ProgressDialog.show(activity, "",
+                        "Logging in...", true);
                 hideKeyboard();
 
                 String email = mEmailField.getText().toString();
@@ -97,20 +96,19 @@ public class LoginActivity extends AppCompatActivity {
                 currentUser.login(email, password, new UserModel.UserModelLoginListener() {
                     @Override
                     public void onLogin() {
-                        mSpinner.setVisibility(View.GONE);
                         Intent switchActivityIntent = new Intent(getApplicationContext(),MainScreenActivity.class);
                         switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        dialog.dismiss();
                         startActivity(switchActivityIntent);
                         finish();
                     }
 
                     @Override
                     public void onLoginFail() {
-                        mSpinner.setVisibility(View.GONE);
+                        dialog.dismiss();
                         Toast.makeText(getApplicationContext(),"Login Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
-                mLoginButton.setEnabled(true);
             }});
     }
 

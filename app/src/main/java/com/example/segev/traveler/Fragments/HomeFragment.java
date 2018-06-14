@@ -1,10 +1,9 @@
-package com.example.segev.traveler;
+package com.example.segev.traveler.Fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,13 +16,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.ModelFirebase;
 import com.example.segev.traveler.Model.Post;
-import com.example.segev.traveler.Model.PostAsyncDao;
 import com.example.segev.traveler.Model.PostListViewModel;
 import com.example.segev.traveler.Model.PostsLinkedList;
 import com.example.segev.traveler.Model.ViewPagerAdapter;
+import com.example.segev.traveler.R;
 
 import java.util.List;
 
@@ -59,16 +57,11 @@ public class HomeFragment extends Fragment {
         });
         mSearch_Posts_Button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                onSearchPostsButtonClicked();
+            public void onClick(View v) { onSearchPostsButtonClicked();
             }
         });
 
-        if (savedInstanceState != null) {
-            mPager.setCurrentItem(savedInstanceState.getInt("currentItem", 0));
-        }
-
-
+        mPager.setAdapter(mAdapter);
         return rootView;
     }
 
@@ -144,11 +137,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
     @Override
-    public void onAttach(Context context) {
-        Log.d(LOG_TAG,"onattach");
-        super.onAttach(context);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         postsViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
         postsViewModel.getData().observe(this, new Observer<List<Post>>() {
             @Override
@@ -158,8 +149,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-
 }
 
 

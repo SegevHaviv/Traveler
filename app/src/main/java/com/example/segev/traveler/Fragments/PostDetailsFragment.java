@@ -1,17 +1,13 @@
-package com.example.segev.traveler;
+package com.example.segev.traveler.Fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.media.Image;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +21,10 @@ import android.widget.Toast;
 import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.UserModel;
+import com.example.segev.traveler.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 //ADD A IF(SAVEDINSTANCE STATE == NULL) CHECK LIKE ELIAV DID
 
@@ -41,6 +41,8 @@ public class PostDetailsFragment extends Fragment {
     private TextView mDescription_Field;
     private ImageView mImages_View;
 
+    MenuItem savedOptionsButton;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,19 +55,19 @@ public class PostDetailsFragment extends Fragment {
         initializeViews(rootView);
 
         mDescription_Field.setMovementMethod(new ScrollingMovementMethod());
-
-        int stackCount = getActivity().getSupportFragmentManager().getBackStackEntryCount();
-        String lastTag = getActivity().getSupportFragmentManager().getBackStackEntryAt(stackCount -1).getName();
-
-        if(!TextUtils.isEmpty(lastTag)) {
-            if (lastTag.equals("Saved")) // Means we came from the saved tab
-                setHasOptionsMenu(false);
-        }else{
-            setHasOptionsMenu(true);
-        }
-
+        setHasOptionsMenu(true);
 
         return rootView;
+    }
+
+    private void updateSaveButton(MenuItem savedItemOptionsButton) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("savedPosts",Context.MODE_PRIVATE);
+        String whatsInSharedPreferencesSoFar = sharedPreferences.getString("saved","");
+        if(whatsInSharedPreferencesSoFar.contains(mPost.getId())){
+            savedItemOptionsButton.setTitle("Unsave");
+        }else{
+            savedItemOptionsButton.setTitle("Save");
+        }
     }
 
 
@@ -92,15 +94,13 @@ public class PostDetailsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
         inflater.inflate(R.menu.post_options, menu);
         if(!(mPost.getUserWhoPostedID().equals(UserModel.getInstance().getCurrentUser().getUid()))){ // not owner of post
             menu.getItem(0).setVisible(false); // Edit
             menu.getItem(1).setVisible(false); // Delete
         }
-
-
-
+        savedOptionsButton = menu.getItem(2);
+        updateSaveButton(savedOptionsButton);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -123,13 +123,16 @@ public class PostDetailsFragment extends Fragment {
     }
 
     private void onSaveButtonClicked() {
+
         //Getting what was so far in shared preferences
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("savedPosts",Context.MODE_PRIVATE);
         String whatsInSharedPreferencesSoFar = sharedPreferences.getString("saved","");
         StringBuilder resultToSave = new StringBuilder(whatsInSharedPreferencesSoFar);
 
         if(whatsInSharedPreferencesSoFar.contains(mPost.getId())){ // means the post is already saved.
-            Toast.makeText(getActivity(),"Saved already, to remove go to 'Saved' tab",Toast.LENGTH_LONG).show();
+            updateSaveButton(savedOptionsButton);
+            removeFromSharedPreferences(mPost.getId());
+            Toast.makeText(getActivity(),"Unsaved",Toast.LENGTH_LONG);
             return;
         }
 
@@ -144,7 +147,7 @@ public class PostDetailsFragment extends Fragment {
         SharedPreferences.Editor sharedPreferencesEditor = getActivity().getSharedPreferences("savedPosts", Context.MODE_PRIVATE).edit();
         sharedPreferencesEditor.putString("saved",resultToSave.toString());
         sharedPreferencesEditor.apply();
-
+        updateSaveButton(savedOptionsButton);
         Toast.makeText(getActivity(),"Saved",Toast.LENGTH_SHORT).show();
     }
 
@@ -160,5 +163,20 @@ public class PostDetailsFragment extends Fragment {
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.flContent, fragment).commit();
+    }
+
+
+    private void removeFromSharedPreferences(String idToRemove){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("savedPosts", Context.MODE_PRIVATE);
+        String postsSaved = sharedPreferences.getString("saved","");
+
+        ArrayList<String> postsToKeep = new ArrayList<>(Arrays.asList(postsSaved.split(","))); // arraylist of all saved
+        postsToKeep.remove(idToRemove);
+
+        String posts = TextUtils.join(",",postsToKeep);
+
+        SharedPreferences.Editor sharedPreferencesEditor = getActivity().getSharedPreferences("savedPosts", Context.MODE_PRIVATE).edit();
+        sharedPreferencesEditor.putString("saved",posts);
+        sharedPreferencesEditor.apply();
     }
 }

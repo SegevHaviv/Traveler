@@ -1,41 +1,28 @@
-package com.example.segev.traveler;
+package com.example.segev.traveler.Fragments;
 
-import android.Manifest;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.pm.PackageManager;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.PostAdapter;
-import com.example.segev.traveler.Model.PostAsyncDao;
-import com.example.segev.traveler.Model.PostListViewModel;
 import com.example.segev.traveler.Model.PostsLinkedList;
+import com.example.segev.traveler.R;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
 public class SearchFragment extends Fragment implements PostAdapter.ItemClickListener{
-    public static final String LOG_TAG = ExperiencesFragment.class.getSimpleName();
+    public static final String LOG_TAG = SearchFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private PostAdapter mAdapter;
@@ -48,10 +35,10 @@ public class SearchFragment extends Fragment implements PostAdapter.ItemClickLis
         postsList = (PostsLinkedList<Post>) getArguments().getSerializable("PostsList");
 
 
-        View rootView = inflater.inflate(R.layout.fragment_experiences, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
         // Set the RecyclerView to its corresponding view
-        mRecyclerView = rootView.findViewById(R.id.recyclerViewPosts);
+        mRecyclerView = rootView.findViewById(R.id.search_recyclerView);
 
         // Set the layout for the RecyclerView to be a linear layout, which measures and
         // positions items within a RecyclerView into a linear list
@@ -72,7 +59,8 @@ public class SearchFragment extends Fragment implements PostAdapter.ItemClickLis
     // Gets the post from the local DB and opening a PostDetailsFragment with it.
     @Override
     public void onItemClickListener(int itemId) { // check if a spinner isn needed
-
+        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
+                "Please wait...", true);
         Model.getInstance().getPostById(itemId, new SavedFragment.onGotPostById() {
             @Override
             public void onComplete(Post post) {
@@ -81,17 +69,11 @@ public class SearchFragment extends Fragment implements PostAdapter.ItemClickLis
                 bundle.putSerializable("Post",post);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                dialog.dismiss();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }
         });
     }
-
-//    @Override
-//    public void onDestroy() {
-//        Log.d(LOG_TAG,"ondestory");
-//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-//        super.onDestroy();
-//    }
 }
 
 

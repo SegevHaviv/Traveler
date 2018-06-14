@@ -8,10 +8,4 @@
         <item name="colorAccent">#ff6600</item>
     </style>
 
-    <!--<style name="MyActionBar" parent="Theme.AppCompat.Light.DarkActionBar">-->
-        <!--<item name="android:background">#ff751a</item>-->
-        <!--<item name="android:displayOptions">showHome|useLogo</item>-->
-        <!--<item name="displayOptions">showHome|useLogo</item>-->
-    <!--</style>-->
-    <!---->
 </resources>

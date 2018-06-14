@@ -12,7 +12,7 @@ import android.webkit.URLUtil;
 
 
 import com.example.segev.traveler.MyApplication;
-import com.example.segev.traveler.SavedFragment;
+import com.example.segev.traveler.Fragments.SavedFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +54,6 @@ public class Model {
     ////////////////////////////// Post List Data Class ///////////////////////////////////////
     class PostListData extends MutableLiveData<List<Post>> {
 
-        // TODO ADD SPINNER
         @Override
         protected void onActive() {
             super.onActive();
@@ -151,10 +149,10 @@ public class Model {
     }
 
 
-
     public interface GetImageListener{
         void onDone(Bitmap imageBitmap);
     }
+
     public void getImage(final String url, final GetImageListener listener ){
         if(TextUtils.isEmpty(url))
             return;
@@ -178,14 +176,12 @@ public class Model {
                 }
             });
         }else {
-            Log.d("TAG","OK reading cache image: " + localFileName);
             listener.onDone(image);
         }
     }
 
     // Store / Get from local mem
     private void saveImageToFile(Bitmap imageBitmap, String imageFileName){
-        Log.d(LOG_TAG,"SAVE IMAGE TO FILE CALLED");
         if (imageBitmap == null) return;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(
@@ -199,8 +195,6 @@ public class Model {
             OutputStream out = new FileOutputStream(imageFile);
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
-
-
 
             addPictureToGallery(imageBitmap);
         } catch (FileNotFoundException e) {

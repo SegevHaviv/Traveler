@@ -1,6 +1,5 @@
 package com.example.segev.traveler.Model;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -18,7 +17,7 @@ public class Post implements Serializable{
     @NonNull
     private String userWhoPostedID;
 
-    private Date updatedAt;
+    private Long updatedAt;
 
     private String title;
 
@@ -28,14 +27,17 @@ public class Post implements Serializable{
 
     private String image;
 
+    private String postingUserEmail;
 
-    public Post(@NonNull String userWhoPostedID, Date updatedAt, String title, String location, String description, String image) {
+
+    public Post(@NonNull String userWhoPostedID, Long updatedAt, String title, String location, String description, String image, String postingUserEmail) {
         this.userWhoPostedID = userWhoPostedID;
         this.updatedAt = updatedAt;
         this.title = title;
         this.location = location;
         this.description = description;
         this.image = image;
+        this.postingUserEmail = postingUserEmail;
         this.id = getUniqueId();
     }
 
@@ -60,11 +62,11 @@ public class Post implements Serializable{
         this.userWhoPostedID = userWhoPostedID;
     }
 
-    public Date getUpdatedAt() {
+    public Long getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -102,5 +104,13 @@ public class Post implements Serializable{
 
     private String getUniqueId(){
         return ((title.hashCode() + location.hashCode() + Long.valueOf(System.currentTimeMillis())) % Integer.MAX_VALUE) + "";
+    }
+
+    public String getPostingUserEmail() {
+        return postingUserEmail;
+    }
+
+    public void setPostingUserEmail(String postingUserEmail) {
+        this.postingUserEmail = postingUserEmail;
     }
 }

@@ -1,16 +1,10 @@
 package com.example.segev.traveler;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,21 +17,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.example.segev.traveler.Model.Model;
+import com.example.segev.traveler.Fragments.ContactUsFragment;
+import com.example.segev.traveler.Fragments.ExperiencesFragment;
+import com.example.segev.traveler.Fragments.HomeFragment;
+import com.example.segev.traveler.Fragments.PrivacyPolicyFragment;
+import com.example.segev.traveler.Fragments.SavedFragment;
+import com.example.segev.traveler.Fragments.UserProfileFragment;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.PostAsyncDao;
 import com.example.segev.traveler.Model.UserModel;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 //TODO CHANGE ALL THE WAY OF INITALIZING FRAGMENTS TO NEWINSTANCE
@@ -65,20 +60,7 @@ public class MainScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-        setTitle("Traveler");
-
-        PostAsyncDao.getAllPosts(new PostAsyncDao.PostAsyncDaoListener<List<Post>>() {
-            @Override
-            public void onComplete(List<Post> data) {
-                PostAsyncDao.deleteAllPosts(new PostAsyncDao.PostAsyncDaoListener<Boolean>() {
-                    @Override
-                    public void onComplete(Boolean data) {
-                        Log.d(LOG_TAG,"done");
-                    }
-                },data);
-            }
-        });
-
+        setTitle("Home");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -160,47 +142,41 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
-        boolean movingFragment = false;
+        setTitle(menuItem.getTitle());
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
 
-////        //Clearing the stack but the home
-//        FragmentManager fm = getSupportFragmentManager();
-//        for(int i = 1; i < fm.getBackStackEntryCount(); ++i) {
-//            fm.popBackStack();
-//        }
 
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass = null;
+        int itemThatWasSelected = menuItem.getItemId();
 
-        switch(menuItem.getItemId()) {
+        switch(itemThatWasSelected) {
             case R.id.nav_home: // TODO Change so it'll come to the same fragment each time.
-                movingFragment = true;
                 fragmentClass = HomeFragment.class;
                 break;
 
             case R.id.nav_experiences:
-                movingFragment = true;
                 fragmentClass = ExperiencesFragment.class;
                 break;
 
-//            case R.id.nav_equipment:
-//                break;
-//
-//            case R.id.nav_articles:
-//                break;
-//
-//            case R.id.nav_voucher:
-//                break;
+            case R.id.nav_contact_us:
+                fragmentClass = ContactUsFragment.class;
+                break;
+
+            case R.id.nav_user_profile:
+                fragmentClass = UserProfileFragment.class;
+                break;
+
+            case R.id.nav_privacy_policy:
+                fragmentClass = PrivacyPolicyFragment.class;
+                break;
 
             case R.id.nav_saved:
-                movingFragment = true;
                 fragmentClass = SavedFragment.class;
                 break;
 
-            case R.id.nav_settings:
-                break;
 
             case R.id.nav_logout:
                 menuItem.setChecked(false);
@@ -208,7 +184,7 @@ public class MainScreenActivity extends AppCompatActivity {
                 break;
         }
 
-        if(movingFragment){
+        if(!(itemThatWasSelected == R.id.nav_logout)){
             try {
                  fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {

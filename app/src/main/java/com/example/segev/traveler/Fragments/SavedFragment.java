@@ -1,4 +1,4 @@
-package com.example.segev.traveler;
+package com.example.segev.traveler.Fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -13,17 +13,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
 import com.example.segev.traveler.Model.PostAdapter;
 import com.example.segev.traveler.Model.PostAsyncDao;
 import com.example.segev.traveler.Model.PostListViewModel;
+import com.example.segev.traveler.MyApplication;
+import com.example.segev.traveler.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +75,7 @@ public class SavedFragment extends Fragment implements PostAdapter.ItemClickList
                 if(!TextUtils.isEmpty(id))
                     removeFromSharedPreferences(id);
 
-                onStart(); // to restart the list
+                onAttach(MyApplication.context);
             }
         }).attachToRecyclerView(mRecyclerView);
 

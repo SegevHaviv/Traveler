@@ -1,6 +1,7 @@
-package com.example.segev.traveler;
+package com.example.segev.traveler.Fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -8,109 +9,133 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.segev.traveler.Model.DateConverter;
 import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
-import com.example.segev.traveler.Model.UserModel;
+import com.example.segev.traveler.R;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
-//todo change the image
 
-// SUMMARY
-//SO FAR WE CAN UPLOAD IMAGE AND WE VALIDATE IT BEFORE WE SUBMIT
-//NEED TO CREATE THE COMMUNICATION WITH DBS AND SAVE THE PHOTOS
+//ADD A IF(SAVEDINSTANCE STATE == NULL) CHECK LIKE ELIAV DID
+//TODO VALIDATE INPUT
 
-public class PostNewFragment extends Fragment {
-    private static final String LOG_TAG = PostNewFragment.class.getSimpleName();
-
-    final int GET_FROM_GALLERY = 3;
+public class PostEditFragment extends Fragment {
+    private static final String LOG_TAG = PostEditFragment.class.getSimpleName();
+    private static final int GET_FROM_GALLERY = 3;
 
     private EditText mTitle_Field;
     private EditText mDescription_Field;
-    private Button mImages_Field;
+    private Button mUpload_Button;
     private EditText mLocation_Field;
     private Button mSubmit_Btn;
-    private ProgressBar mSpinner_Bar;
 
     private ImageView uploaded_imageView; // Presenting the currently uploaded image.
 
+    Bitmap mPhotos;
 
-    private Bitmap mPhotos;
-
+    private Post mPost;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_new_post, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_edit_post, container, false);
+        Bundle addedArguments = getArguments();
+
+        if (addedArguments != null)  // Not supposed to happen, a post to edit should be transferred
+            mPost = (Post) addedArguments.getSerializable("Post");
+        else {
+            mPost = new Post();
+            Log.d(LOG_TAG, "addedArguments is null, check it out.");
+        }
         initializeViews(rootView);
 
-        mImages_Field.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onUploadImageButtonClicked();
-            }
-        });
         mSubmit_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSubmitButtonClicked();
             }
         });
+
+        mUpload_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onUploadImageButtonClicked();
+            }
+        });
+
+
         return rootView;
     }
 
     private void initializeViews(View rootView) {
-        uploaded_imageView = rootView.findViewById(R.id.post_new_uploaded_imageView);
-        mDescription_Field = rootView.findViewById(R.id.post_new_description);
-        mImages_Field = rootView.findViewById(R.id.post_new_images);
-        mLocation_Field = rootView.findViewById(R.id.post_new_location);
-        mTitle_Field = rootView.findViewById(R.id.post_new_title);
-        mSubmit_Btn = rootView.findViewById(R.id.post_new_submit);
+        mTitle_Field = rootView.findViewById(R.id.post_edit_title);
+        mLocation_Field = rootView.findViewById(R.id.post_edit_location);
+        mDescription_Field = rootView.findViewById(R.id.post_edit_description);
+        mUpload_Button = rootView.findViewById(R.id.post_edit_images);
+        mSubmit_Btn = rootView.findViewById(R.id.post_edit_submit);
+        uploaded_imageView = rootView.findViewById(R.id.post_edit_uploaded_imageView);
 
-        mSpinner_Bar = rootView.findViewById(R.id.post_new_progressbar);
-        mSpinner_Bar.setVisibility(View.GONE);
+        Model.getInstance().getImage(mPost.getImage(), new Model.GetImageListener() {
+            @Override
+            public void onDone(Bitmap imageBitmap) {
+                uploaded_imageView.setImageBitmap(imageBitmap);
+                mPhotos = imageBitmap;
+            }
+        });
+
+        mTitle_Field.setText(mPost.getTitle());
+        mLocation_Field.setText(mPost.getLocation());
+        mDescription_Field.setText(mPost.getDescription());
     }
 
     private void onSubmitButtonClicked() {
-        mSubmit_Btn.setEnabled(false);
-        mSpinner_Bar.setVisibility(View.VISIBLE);
         if(!validateInput())
             return;
 
-        final String userIdWhoPosted = UserModel.getInstance().getCurrentUser().getUid();
-        final String title = mTitle_Field.getText().toString();
-        final String location = mLocation_Field.getText().toString();
-        final String description = mDescription_Field.getText().toString();
-        final Date currentDate = new Date();
 
+        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
+                "Please wait...", true);
+
+        String title = mTitle_Field.getText().toString();
+        String description = mDescription_Field.getText().toString();
+        String location = mLocation_Field.getText().toString();
+        Long currentDate = DateConverter.toTimestamp(new Date());
+
+        mPost.setTitle(title);
+        mPost.setDescription(description);
+        mPost.setLocation(location);
+        mPost.setUpdatedAt(currentDate);
 
         Model.getInstance().saveImage(mPhotos, new Model.SaveImageListener() {
             @Override
             public void onDone(String url) {
-                mSpinner_Bar.setVisibility(View.GONE);
-                mSubmit_Btn.setEnabled(true);
+
+
                 if(url != null) {
-                    Post postToInsert = new Post(userIdWhoPosted, currentDate, title, location, description,url); // TODO CHANGE INSERTED IMAGE
-                    Model.getInstance().insertPost(postToInsert);
+                    mPost.setImage(url);
+                    Model.getInstance().insertPost(mPost);
                 }else{
-                    Toast.makeText(getActivity(),"Adding post failed, please try again later.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),"Editing post failed, please try again later.",Toast.LENGTH_LONG).show();
                 }
+                dialog.dismiss();
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
 
     private void onUploadImageButtonClicked(){
-        mImages_Field.setError(null);
+        mUpload_Button.setError(null);
         startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
     }
 
@@ -121,7 +146,6 @@ public class PostNewFragment extends Fragment {
         //Detects request codes
         if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
             Uri selectedImage = data.getData();
-            Bitmap bitmap = null;
             try {
                 mPhotos = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
                 uploaded_imageView.setImageBitmap(mPhotos);
@@ -148,17 +172,17 @@ public class PostNewFragment extends Fragment {
             flag = false;
         }
         if(mPhotos == null) {
-            mImages_Field.setError("Required");
+            mUpload_Button.setError("Required");
             flag = false;
         }
         else{
             Bitmap emptyBitmap = Bitmap.createBitmap(mPhotos.getWidth(), mPhotos.getHeight(), mPhotos.getConfig());
             if(mPhotos.sameAs(emptyBitmap)) {
-                mImages_Field.setError("Required");
+                mUpload_Button.setError("Required");
                 flag = false;
             }
         }
         return flag;
     }
-}
 
+}

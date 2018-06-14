@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorOrange"
-    tools:context=".PostNewFragment">
+    tools:context=".Fragments.PostNewFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -13,6 +13,8 @@
         android:id="@+id/post_new_description"
         android:layout_width="329dp"
         android:layout_height="115dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginStart="27dp"
         android:layout_marginTop="12dp"
         android:backgroundTint="@android:color/white"
         android:ems="10"
@@ -20,8 +22,9 @@
         android:inputType="textMultiLine"
         android:scrollbars="vertical"
         android:textColorHint="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@+id/post_new_location"
-        tools:layout_editor_absoluteX="27dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_new_location" />
 
     <EditText
         android:id="@+id/post_new_location"
@@ -71,10 +74,10 @@
         app:layout_constraintBottom_toTopOf="@+id/post_new_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/newHeadLine" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/newHeadLine"
         android:layout_width="165dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -117,24 +120,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_new_images" />
-
-    <ProgressBar
-        android:id="@+id/post_new_progressbar"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="false"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:indeterminate="false"
-        android:indeterminateTint="@android:color/black"
-        android:progressBackgroundTint="@android:color/black"
-        app:layout_constraintBottom_toTopOf="@+id/post_new_images"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/post_new_description"
-        app:layout_constraintTop_toBottomOf="@+id/post_new_location" />
 
 </android.support.constraint.ConstraintLayout>

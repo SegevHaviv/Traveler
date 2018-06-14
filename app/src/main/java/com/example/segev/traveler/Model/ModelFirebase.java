@@ -3,6 +3,7 @@ package com.example.segev.traveler.Model;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-// MIGHT CAUSE PROBLEM WHEN CHANGED DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(); TO MEMBER
+
 public class ModelFirebase {
     private static final String TABLE_NAME = "posts";
     private static final String LOG_TAG = ModelFirebase.class.getSimpleName();
@@ -28,8 +29,8 @@ public class ModelFirebase {
 
     private static final Object LOCK = new Object();
     private static ModelFirebase instance;
+    private DatabaseReference mDatabase;
 
-    private ModelFirebase(){}
 
     public static ModelFirebase getInstance() {
         if(instance == null)
@@ -39,24 +40,25 @@ public class ModelFirebase {
             return instance;
     }
 
+    private ModelFirebase(){
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
 
     public void insertPost(Post post){
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child(TABLE_NAME).child(post.getId()).setValue(post);
     }
 
     public void deletePost(Post post){
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child(TABLE_NAME).child(post.getId()).removeValue();
     }
 
     public void cancelGetAllPosts() {
-        DatabaseReference DatabaseRef = FirebaseDatabase.getInstance().getReference().child(TABLE_NAME);
-        DatabaseRef.removeEventListener(eventListener);
+        mDatabase.child(TABLE_NAME).removeEventListener(eventListener);
     }
 
     public void getAllPosts(final GetAllPostsListener listener) {
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(TABLE_NAME);
+        DatabaseReference mRef = mDatabase.child(TABLE_NAME);
 
 
 
@@ -79,7 +81,7 @@ public class ModelFirebase {
 
     public void getPostsByLocation(final String location,final GetAllPostsListener listener){
 
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(TABLE_NAME);
+        DatabaseReference mRef = mDatabase.child(TABLE_NAME);
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -87,7 +89,7 @@ public class ModelFirebase {
                 LinkedList<Post> postList = new LinkedList<>();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                         Post post = data.getValue(Post.class);
-                        if(post.getLocation().equals(location))
+                        if(post.getLocation().toLowerCase().contains(location.toLowerCase()))
                             postList.add(post);
                     }
                     listener.onSuccess(postList);
@@ -154,5 +156,4 @@ public class ModelFirebase {
             }
         });
     }
-
 }

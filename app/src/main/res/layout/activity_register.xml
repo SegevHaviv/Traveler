@@ -71,15 +71,6 @@
     <!--/////////////////////////////////////////////////////////-->
 
     <!--//////////////////Spinner Progress Bar////////////////////////-->
-    <ProgressBar
-        android:id="@+id/register_ProgressBar"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="false"
-        android:layout_centerInParent="true"
-        android:indeterminate="false"
-        android:progressBackgroundTint="@android:color/black" />
     <!--/////////////////////////////////////////////////////////-->
 
 </RelativeLayout>

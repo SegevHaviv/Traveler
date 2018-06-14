@@ -61,6 +61,10 @@ public class UserModel {
     public FirebaseUser getCurrentUser(){ return mAuth.getCurrentUser(); }
     public void signOutAccount(){ mAuth.signOut(); }
 
+    public String getCurrentUserEmail(){
+        return UserModel.getInstance().getCurrentUser().getEmail();
+    }
+
 
     public interface UserModelLoginListener {
         void onLogin();

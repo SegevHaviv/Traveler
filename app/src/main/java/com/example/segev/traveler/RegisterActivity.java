@@ -1,5 +1,6 @@
 package com.example.segev.traveler;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initializeButtons(){
-        mSpinner = findViewById(R.id.register_ProgressBar);
         mSpinner.setVisibility(View.GONE);
         mRegisterButton = findViewById(R.id.register_button);
     }
@@ -65,7 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void onRegisterButtonClicked(){
         mRegisterButton.setEnabled(false);
-        mSpinner.setVisibility(View.VISIBLE);
+        final ProgressDialog dialog = ProgressDialog.show(this, "",
+                "Creating A New User...", true);
 
         hideKeyboard();
 
@@ -80,13 +81,14 @@ public class RegisterActivity extends AppCompatActivity {
                 mSpinner.setVisibility(View.GONE);
                 Intent switchActivityIntent = new Intent(getApplicationContext(),MainScreenActivity.class);
                 switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                dialog.dismiss();
                 startActivity(switchActivityIntent);
                 finish();
             }
 
             @Override
             public void onRegisterFail() {
-                mSpinner.setVisibility(View.GONE);
+                dialog.dismiss();
                 Toast.makeText(getApplicationContext(),"Register Failed", Toast.LENGTH_SHORT).show();
             }
         });
