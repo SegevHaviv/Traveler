@@ -66,14 +66,12 @@ public class PostEditFragment extends Fragment {
                 onSubmitButtonClicked();
             }
         });
-
         mUpload_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onUploadImageButtonClicked();
             }
         });
-
 
         return rootView;
     }
@@ -120,8 +118,6 @@ public class PostEditFragment extends Fragment {
         Model.getInstance().saveImage(mPhotos, new Model.SaveImageListener() {
             @Override
             public void onDone(String url) {
-
-
                 if(url != null) {
                     mPost.setImage(url);
                     Model.getInstance().insertPost(mPost);

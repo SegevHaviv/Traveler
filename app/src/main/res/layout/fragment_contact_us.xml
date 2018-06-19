@@ -7,5 +7,54 @@
     tools:context=".Fragments.ContactUsFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="366dp"
+        android:layout_height="92dp"
+        android:layout_marginBottom="92dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/contact_us"
+        android:textColor="@color/colorOrange"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="307dp"
+        android:layout_height="107dp"
+        android:layout_marginBottom="127dp"
+        android:layout_marginStart="39dp"
+        android:text="Our offices opening hours are : \n Sunday - Thursday 9:00 - 21:00 \n Friday 9:00 - 12:00 \n Saturday - Closed"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/contact_us_telephone"
+        android:layout_width="212dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="61dp"
+        android:layout_marginStart="86dp"
+        android:drawableStart="@drawable/contact_us"
+        android:text="Tel : +972-3918271"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="221dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="82dp"
+        android:drawableStart="@drawable/email"
+        android:text="Lorem@Ipsum.com"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/contact_us_telephone"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

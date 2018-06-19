@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -114,7 +115,7 @@ public class SavedFragment extends Fragment implements PostAdapter.ItemClickList
                     }
                 }
 
-                mAdapter.setTasks(leftPosts);
+                mAdapter.setPosts(leftPosts);
 
             }
         }
@@ -167,5 +168,13 @@ public class SavedFragment extends Fragment implements PostAdapter.ItemClickList
 
     public interface onGotPostById{
         void onComplete(Post post);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Saved");
+        NavigationView view = getActivity().findViewById(R.id.nav_view);
+        view.getMenu().getItem(2).setChecked(true);
     }
 }

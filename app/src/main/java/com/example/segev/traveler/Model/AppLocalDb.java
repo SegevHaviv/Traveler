@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.example.segev.traveler.MyApplication;
 
-@Database(entities = {Post.class}, version = 3,exportSchema = false)
+@Database(entities = {Post.class,SearchQuery.class}, version = 4,exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class AppLocalDb extends RoomDatabase {
 
@@ -31,6 +31,6 @@ public abstract class AppLocalDb extends RoomDatabase {
         }
         return sInstance;
     }
-
+    public abstract SearchQueryDao searchQueryDao();
     public abstract PostDao postDao();
 }

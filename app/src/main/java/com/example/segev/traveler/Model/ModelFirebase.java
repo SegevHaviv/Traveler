@@ -18,12 +18,16 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ModelFirebase {
-    private static final String TABLE_NAME = "posts";
+    private static final String POSTS_TABLE_NAME = "posts";
+    private static final String SEARCH_TABLE_NAME = "searches";
     private static final String LOG_TAG = ModelFirebase.class.getSimpleName();
     private ValueEventListener eventListener;
 
@@ -46,19 +50,19 @@ public class ModelFirebase {
 
 
     public void insertPost(Post post){
-        mDatabase.child(TABLE_NAME).child(post.getId()).setValue(post);
+        mDatabase.child(POSTS_TABLE_NAME).child(post.getId()).setValue(post);
     }
 
     public void deletePost(Post post){
-        mDatabase.child(TABLE_NAME).child(post.getId()).removeValue();
+        mDatabase.child(POSTS_TABLE_NAME).child(post.getId()).removeValue();
     }
 
     public void cancelGetAllPosts() {
-        mDatabase.child(TABLE_NAME).removeEventListener(eventListener);
+        mDatabase.child(POSTS_TABLE_NAME).removeEventListener(eventListener);
     }
 
     public void getAllPosts(final GetAllPostsListener listener) {
-        DatabaseReference mRef = mDatabase.child(TABLE_NAME);
+        DatabaseReference mRef = mDatabase.child(POSTS_TABLE_NAME);
 
 
 
@@ -79,9 +83,9 @@ public class ModelFirebase {
         });
     }
 
-    public void getPostsByLocation(final String location,final GetAllPostsListener listener){
+    public void getPostsByLocation(final String location,final Model.onGetPostByLocation listener){
 
-        DatabaseReference mRef = mDatabase.child(TABLE_NAME);
+        DatabaseReference mRef = mDatabase.child(POSTS_TABLE_NAME);
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -92,7 +96,7 @@ public class ModelFirebase {
                         if(post.getLocation().toLowerCase().contains(location.toLowerCase()))
                             postList.add(post);
                     }
-                    listener.onSuccess(postList);
+                    listener.onDone(postList);
             }
 
             @Override
@@ -133,7 +137,6 @@ public class ModelFirebase {
                 listener.onDone(downloadUrl.toString());
             }
         });
-
     }
 
     public void getImage(String url, final Model.GetImageListener listener){
@@ -154,6 +157,67 @@ public class ModelFirebase {
                 Log.d("TAG","get image from firebase Failed");
                 listener.onDone(null);
             }
+        });
+    }
+
+
+    /////////////////////////////////// Searches ///////////////////////////////////////////////////////
+
+
+    public void insertSearch(SearchQuery query){
+        mDatabase.child(SEARCH_TABLE_NAME).child(query.getQuery()).setValue(query);
+    }
+
+    public interface onGotSearchByNameListener{
+        void onComplete(SearchQuery search);
+    }
+
+    public void getSearchByQuery(String query,final onGotSearchByNameListener listener){
+        DatabaseReference mRef = mDatabase.child(SEARCH_TABLE_NAME).child(query);
+
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listener.onComplete(dataSnapshot.getValue(SearchQuery.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+    public interface onGotSearchTopFive{
+        void onComplete(List<SearchQuery> search);
+    }
+
+    public void getTopThreeSearches(final onGotSearchTopFive listener){
+        DatabaseReference mRef = mDatabase.child(SEARCH_TABLE_NAME);
+
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                LinkedList<SearchQuery> queriesList = new LinkedList<>();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    SearchQuery currQuery = data.getValue(SearchQuery.class);
+                    queriesList.add(currQuery);
+                }
+
+                Collections.sort(queriesList, new Comparator<SearchQuery>() {
+                    @Override
+                    public int compare(SearchQuery o1, SearchQuery o2) {
+                        return o2.getSearchesAmount() - o1.getSearchesAmount();
+                    }
+                });
+
+                if(queriesList.size() > 3)
+                    listener.onComplete(queriesList.subList(0,3));
+                else{
+                    listener.onComplete(queriesList);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
         });
     }
 }

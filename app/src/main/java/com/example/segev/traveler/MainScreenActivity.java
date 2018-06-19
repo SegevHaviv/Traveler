@@ -34,6 +34,7 @@ import com.example.segev.traveler.Model.PostAsyncDao;
 import com.example.segev.traveler.Model.UserModel;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 //TODO CHANGE ALL THE WAY OF INITALIZING FRAGMENTS TO NEWINSTANCE
 
@@ -53,6 +54,7 @@ public class MainScreenActivity extends AppCompatActivity {
     private NavigationView nav_view;
     //Views
 
+
     final int REQUEST_WRITE_STORAGE = 1;
 
     @Override
@@ -60,10 +62,10 @@ public class MainScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-        setTitle("Home");
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         mDrawerLayout = findViewById(R.id.drawerLayout);
 
@@ -75,7 +77,11 @@ public class MainScreenActivity extends AppCompatActivity {
         nav_view = findViewById(R.id.nav_view);
 
         setupDrawerContent(nav_view);
+
         initializeHeaderEmail(nav_view);
+
+        nav_view.getMenu().getItem(0).setChecked(true);
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -87,10 +93,16 @@ public class MainScreenActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = new HomeFragment();
+            Fragment fragment = null;
+            try {
+                fragment = HomeFragment.class.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
 
             transaction.replace(R.id.flContent, fragment, "Home");
-            //transaction.addToBackStack("Home");
             transaction.commit();
         }
     }
@@ -102,22 +114,14 @@ public class MainScreenActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
+
+                } else {}
                 return;
             }
         }
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onBackPressed() {
@@ -142,7 +146,6 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
-        setTitle(menuItem.getTitle());
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
 
@@ -184,18 +187,18 @@ public class MainScreenActivity extends AppCompatActivity {
                 break;
         }
 
-        if(!(itemThatWasSelected == R.id.nav_logout)){
+        if(fragmentClass != null){
             try {
                  fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.flContent, fragment).commit();
+                // Insert the fragment by replacing any existing fragment
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.flContent, fragment).commit();
         }
     }
+
 
     private void initializeHeaderEmail(NavigationView navigationView){
         View header = navigationView.getHeaderView(0);

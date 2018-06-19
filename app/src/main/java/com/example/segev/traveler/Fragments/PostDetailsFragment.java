@@ -112,27 +112,28 @@ public class PostDetailsFragment extends Fragment {
         switch(ItemThatWasSelected){
             case R.id.post_options_delete:
                 onDeleteButtonClicked();
-                break;
+                return true;
             case R.id.post_options_edit:
                 onEditButtonClicked();
-                break;
+                return true;
+
             case R.id.post_options_saved:
                 onSaveButtonClicked();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void onSaveButtonClicked() {
-
         //Getting what was so far in shared preferences
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("savedPosts",Context.MODE_PRIVATE);
         String whatsInSharedPreferencesSoFar = sharedPreferences.getString("saved","");
         StringBuilder resultToSave = new StringBuilder(whatsInSharedPreferencesSoFar);
 
         if(whatsInSharedPreferencesSoFar.contains(mPost.getId())){ // means the post is already saved.
-            updateSaveButton(savedOptionsButton);
             removeFromSharedPreferences(mPost.getId());
             Toast.makeText(getActivity(),"Unsaved",Toast.LENGTH_LONG);
+            updateSaveButton(savedOptionsButton);
             return;
         }
 
@@ -179,4 +180,6 @@ public class PostDetailsFragment extends Fragment {
         sharedPreferencesEditor.putString("saved",posts);
         sharedPreferencesEditor.apply();
     }
+
+
 }

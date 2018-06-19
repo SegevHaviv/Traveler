@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.segev.traveler.Model.Model;
 import com.example.segev.traveler.Model.Post;
@@ -35,7 +36,15 @@ public class SearchFragment extends Fragment implements PostAdapter.ItemClickLis
         postsList = (PostsLinkedList<Post>) getArguments().getSerializable("PostsList");
 
 
+
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+
+        final TextView emptyListMessage = rootView.findViewById(R.id.search_no_posts);
+        if(postsList.isEmpty()){
+            emptyListMessage.setVisibility(View.VISIBLE);
+        }else{
+            emptyListMessage.setVisibility(View.GONE);
+        }
 
         // Set the RecyclerView to its corresponding view
         mRecyclerView = rootView.findViewById(R.id.search_recyclerView);
@@ -46,12 +55,11 @@ public class SearchFragment extends Fragment implements PostAdapter.ItemClickLis
 
         // Initialize the adapter and attach it to the RecyclerView
         mAdapter = new PostAdapter(getActivity(), this);
-        mAdapter.setTasks(postsList);
+        mAdapter.setPosts(postsList);
         mRecyclerView.setAdapter(mAdapter);
 
         DividerItemDecoration decoration = new DividerItemDecoration(getActivity().getApplicationContext(), VERTICAL);
         mRecyclerView.addItemDecoration(decoration);
-
 
         return rootView;
     }
@@ -73,6 +81,12 @@ public class SearchFragment extends Fragment implements PostAdapter.ItemClickLis
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Search Results");
     }
 }
 

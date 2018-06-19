@@ -2,6 +2,7 @@ package com.example.segev.traveler.Model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,9 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.segev.traveler.Fragments.PostDetailsFragment;
+import com.example.segev.traveler.MyApplication;
 import com.example.segev.traveler.R;
 
 import java.util.Collections;
@@ -34,12 +37,13 @@ public class ViewPagerAdapter extends PagerAdapter{
     public ViewPagerAdapter(AppCompatActivity activity) {
         this.activity = activity;
         postsOnViewPager = new LinkedList<>();
-
-
-    }
+        }
 
 
     public void setPosts(List<Post> postsToPresent){
+        if(postsToPresent == null)
+            return;
+
         if(postsToPresent.size() > 5){
             postsOnViewPager = postsToPresent.subList(0,5);
         }else{
@@ -70,33 +74,23 @@ public class ViewPagerAdapter extends PagerAdapter{
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
 
         LayoutInflater inflater = (LayoutInflater)activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.post_layout,container,false);
+        View itemView = inflater.inflate(R.layout.view_pager_post_layout,container,false);
 
         Post currentPostToPresent = postsOnViewPager.get(position);
 
-        DisplayMetrics dis = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(dis);
-        int height = dis.heightPixels;
-        int width = dis.widthPixels;
-
-        final ImageView image = itemView.findViewById(R.id.post_layout_imageView);
+//        final RelativeLayout relativeLayout = itemView.findViewById(R.id.view_pager_post_layout);
         final TextView title = itemView.findViewById(R.id.post_layout_title);
-        final TextView location = itemView.findViewById(R.id.post_layout_location);
-        final TextView email = itemView.findViewById(R.id.post_layout_user_email);
-
-        image.setMaxHeight(height);
-        image.setMaxWidth(width);
-
-
+        final View view = itemView.findViewById(R.id.view);
+        final TextView description = itemView.findViewById(R.id.view_pager_post_description);
 
         title.setText(currentPostToPresent.getTitle());
-        location.setText(currentPostToPresent.getLocation());
-        email.setText(currentPostToPresent.getPostingUserEmail());
+        description.setText(currentPostToPresent.getDescription());
 
         Model.getInstance().getImage(currentPostToPresent.getImage(), new Model.GetImageListener() {
                 @Override
                 public void onDone(Bitmap imageBitmap) {
-                    image.setImageBitmap(imageBitmap);
+//                    relativeLayout.setBackground(new BitmapDrawable(MyApplication.context.getResources(),imageBitmap));
+                    view.setBackground(new BitmapDrawable(MyApplication.context.getResources(),imageBitmap));
                 }
             });
 

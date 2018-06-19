@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +46,22 @@ public class Model {
             }
         }
         return instance;
+    }
+
+
+    public interface onGetPostByLocation{
+        void onDone(List<Post> postsList);
+    }
+
+    public void getPostByLocation(final String location,final onGetPostByLocation listener){
+        PostAsyncDao.getPostByLocation(new PostAsyncDao.PostAsyncDaoListener<List<Post>>() {
+            @Override
+            public void onComplete(List<Post> data) {
+                if(data != null) {
+                    listener.onDone(data);
+                }
+            }
+        },location);
     }
 
 
@@ -71,20 +89,28 @@ public class Model {
                     modelFirebase.getAllPosts(new ModelFirebase.GetAllPostsListener() {
                         @Override
                         public void onSuccess(final List<Post> postsFromFireBase) {
-                            // 4. update the live data with the new student list
-                            setValue(postsFromFireBase);
-                            Log.d(LOG_TAG, "got students from firebase " + postsFromFireBase.size());
+                            // 4. update the live data with the new student list)
+                            long mostRecentDateFromLocal = getLastUpdatedDate(postsFroLocalDB);
+                            long mostRecentDateFromFirebase = getLastUpdatedDate(postsFromFireBase);
 
-                            // 5. update the local DB - need to delete all and insert all
-                            PostAsyncDao.deleteAllPosts(new PostAsyncDao.PostAsyncDaoListener<Boolean>() {
-                                @Override
-                                public void onComplete(Boolean data) {
-                                    PostAsyncDao.insertAllPosts(new PostAsyncDao.PostAsyncDaoListener<Boolean>() {
-                                        @Override
-                                        public void onComplete(Boolean data) {}
-                                    }, postsFromFireBase);
-                                }
-                            },postsFroLocalDB);
+                            Log.d(LOG_TAG," local is " +  mostRecentDateFromLocal + " firebase is " + mostRecentDateFromFirebase);
+
+                            if(mostRecentDateFromFirebase != mostRecentDateFromLocal || postsFroLocalDB.size() != postsFromFireBase.size()) {
+                                setValue(postsFromFireBase);
+                                Log.d(LOG_TAG, "got students from firebase " + postsFromFireBase.size());
+
+                                // 5. update the local DB - need to delete all and insert all
+                                PostAsyncDao.deleteAllPosts(new PostAsyncDao.PostAsyncDaoListener<Boolean>() {
+                                    @Override
+                                    public void onComplete(Boolean data) {
+                                        PostAsyncDao.insertAllPosts(new PostAsyncDao.PostAsyncDaoListener<Boolean>() {
+                                            @Override
+                                            public void onComplete(Boolean data) {
+                                            }
+                                        }, postsFromFireBase);
+                                    }
+                                }, postsFroLocalDB);
+                            }
                         }
                     });
                 }
@@ -102,9 +128,21 @@ public class Model {
             super();
             setValue(new LinkedList<Post>());
         }
-    }
-    ////////////////////////////// Post List Data Class ///////////////////////////////////////
 
+        private long getLastUpdatedDate(List<Post> posts){
+            if(posts.size() == 0 || posts == null)
+                return 0;
+            Post post = Collections.max(posts, new Comparator<Post>() {
+                @Override
+                public int compare(Post o1, Post o2) {
+                    return (int)(o1.getUpdatedAt() - o2.getUpdatedAt());
+                }
+            });
+            return post.getUpdatedAt();
+        }
+    }
+
+    ////////////////////////////// Post List Data Class ///////////////////////////////////////
 
 
     PostListData postListData = new PostListData();
@@ -119,7 +157,7 @@ public class Model {
 
     public void deletePost(final Post post){
         modelFirebase.deletePost(post);
-    } // check if exists in sharedpreferences, if does, remove it
+    }
 
     public Post getPostById(int id, final SavedFragment.onGotPostById listener){
         PostAsyncDao.getPostById(new PostAsyncDao.PostAsyncDaoListener<Post>() {
@@ -211,22 +249,46 @@ public class Model {
     }
 
     private Bitmap loadImageFromFile(String imageFileName){
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         try {
             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             File imageFile = new File(dir,imageFileName);
             InputStream inputStream = new FileInputStream(imageFile);
             bitmap = BitmapFactory.decodeStream(inputStream);
-            Log.d("tag","got image from cache: " + imageFileName);
         } catch (IOException e) {
-            Log.d(LOG_TAG,"File Not Found in Cache");
             bitmap = null;
         }
         return bitmap;
     }
+
+
+    //////////////////////// Searches ///////////////////////////
+    public void insertSearch(final SearchQuery query){
+        SearchQueryAsyncDao.insertSearchQuery(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<Boolean>() {
+            @Override
+            public void onComplete(Boolean data) {
+                modelFirebase.insertSearch(query);
+            }
+        },query);
+    }
+
+    public void getTopThreeSearches(final ModelFirebase.onGotSearchTopFive listener){
+        SearchQueryAsyncDao.getTopThreeQueries(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<List<SearchQuery>>() {
+            @Override
+            public void onComplete(List<SearchQuery> data) {
+                listener.onComplete(data);
+                modelFirebase.getTopThreeSearches(listener);
+            }
+        });
+    }
+
+    public void getSearchByQuery(final String query,final ModelFirebase.onGotSearchByNameListener listener){
+        SearchQueryAsyncDao.getSearchQueryByQuery(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<SearchQuery>() {
+            @Override
+            public void onComplete(SearchQuery data) {
+                listener.onComplete(data);
+                modelFirebase.getSearchByQuery(query,listener);
+            }
+        },query);
+    }
 }
-
-
-
-
-

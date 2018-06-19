@@ -5,8 +5,10 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -33,14 +35,18 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
     private RecyclerView mRecyclerView;
     private PostAdapter mAdapter;
 
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM3 = "param3";
+
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_experiences, container, false);
-
-        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
-                "", true);
 
         // Set the RecyclerView to its corresponding view
         mRecyclerView = rootView.findViewById(R.id.recyclerViewPosts);
@@ -65,10 +71,9 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
         });
 
 
-
-        dialog.dismiss();
         return rootView;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,10 +82,38 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
         postListViewModel.getData().observe(this, new Observer<List<Post>>() {
             @Override
             public void onChanged(@Nullable List<Post> posts) {
-                mAdapter.setTasks(posts);
+                mAdapter.setPosts(posts);
             }
         });
     }
+
+    //    public static ExperiencesFragment newInstance(PostListViewModel postListViewModel,RecyclerView mRecyclerView,PostAdapter mAdapter) {
+//        ExperiencesFragment fragment = new ExperiencesFragment();
+//        Bundle args = new Bundle();
+//        args.putSerializable(ARG_PARAM1, postListViewModel);
+//        args.putSerializable(ARG_PARAM3, mAdapter);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+//
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        if (getArguments() != null) {
+//            postListViewModel = (PostListViewModel) getArguments().getSerializable(ARG_PARAM1);
+//            mAdapter = (PostAdapter)getArguments().getSerializable(ARG_PARAM3);
+//        }
+//
+//        postListViewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
+//        postListViewModel.getData().observe(this, new Observer<List<Post>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Post> posts) {
+//                mAdapter.setTasks(posts);
+//            }
+//        });
+//    }
+
+
 
     private void onAddPostClicked(){
         Fragment fragment = new PostNewFragment();
@@ -104,6 +137,15 @@ public class ExperiencesFragment extends Fragment implements PostAdapter.ItemCli
                 fragmentManager.beginTransaction().addToBackStack(null).replace(R.id.flContent, fragment).commit();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Trips Experiences");
+        NavigationView view = getActivity().findViewById(R.id.nav_view);
+        view.getMenu().getItem(1).setChecked(true);
+
     }
 }
 

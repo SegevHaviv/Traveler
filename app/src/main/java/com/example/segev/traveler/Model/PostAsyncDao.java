@@ -87,6 +87,23 @@ public class PostAsyncDao {
         task.execute();
     }
 
+    static public void getPostByLocation(final PostAsyncDaoListener<List<Post>> listener, final String location) {
+        class MyAsyncTask extends AsyncTask<String,String,List<Post>>{
+            @Override
+            protected List<Post> doInBackground(String... strings) {
+                return AppLocalDb.getsInstance(MyApplication.context).postDao().getPostByLocation(location);
+            }
+
+            @Override
+            protected void onPostExecute(List<Post> post) {
+                super.onPostExecute(post);
+                listener.onComplete(post);
+            }
+        }
+        MyAsyncTask task = new MyAsyncTask();
+        task.execute();
+    }
+
     static public void deletePost(final PostAsyncDaoListener<Post> listener, final Post postToDelete) {
         class MyAsyncTask extends AsyncTask<String,String,Boolean>{
             @Override

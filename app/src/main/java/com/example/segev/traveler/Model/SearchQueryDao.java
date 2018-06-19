@@ -10,25 +10,22 @@ import android.arch.persistence.room.Update;
 import java.util.List;
 
 @Dao
-public interface PostDao {
+public interface SearchQueryDao {
 
-    @Query("SELECT * FROM Post")
-    List<Post> getAllPosts();
+    @Query("SELECT * FROM SearchQuery")
+    List<SearchQuery> getAllSearchQueries();
 
-    @Query("SELECT * FROM Post WHERE id = :id")
-    Post getPostByID(int id);
-
-    @Query("SELECT * FROM Post WHERE LOWER(location) = LOWER(:location)")
-    List<Post> getPostByLocation(String location);
+    @Query("SELECT * FROM SearchQuery WHERE `query` = :query")
+    SearchQuery getSearchQueryByLocation(String query);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPost(Post post);
+    void insertSearchQuery(SearchQuery searchQuery);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updatePost(Post post);
+    void updateSearchQuery(SearchQuery searchQuery);
 
     @Delete
-    void deletePost(Post post);
+    void deleteSearchQuery(SearchQuery searchQuery);
 
     //implement drop table
 }
