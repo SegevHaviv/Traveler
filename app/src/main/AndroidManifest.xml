@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <!--Login Activity-->
-        <activity android:name=".LoginActivity"
+        <activity android:name=".Model.ZoomOutPageTransformer$LoginActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>

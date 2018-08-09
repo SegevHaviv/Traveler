@@ -27,8 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 
-//ADD A IF(SAVEDINSTANCE STATE == NULL) CHECK LIKE ELIAV DID
-//TODO VALIDATE INPUT
+
 
 public class PostEditFragment extends Fragment {
     private static final String LOG_TAG = PostEditFragment.class.getSimpleName();

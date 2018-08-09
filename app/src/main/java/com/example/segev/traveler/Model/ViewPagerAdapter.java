@@ -9,12 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.segev.traveler.Fragments.PostDetailsFragment;
@@ -26,11 +23,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-
-//TODO create a text "No Recent Posts To Show" when there's no posts at all.
-
 public class ViewPagerAdapter extends PagerAdapter{
-    private static final String LOG_TAG = "someTag";
+    private static final String LOG_TAG = ViewPagerAdapter.class.getSimpleName();
     AppCompatActivity activity;
    List<Post> postsOnViewPager;
 
@@ -78,13 +72,12 @@ public class ViewPagerAdapter extends PagerAdapter{
 
         Post currentPostToPresent = postsOnViewPager.get(position);
 
-//        final RelativeLayout relativeLayout = itemView.findViewById(R.id.view_pager_post_layout);
-        final TextView title = itemView.findViewById(R.id.post_layout_title);
+        final TextView title = itemView.findViewById(R.id.viewpager_post_title);
         final View view = itemView.findViewById(R.id.view);
-        final TextView description = itemView.findViewById(R.id.view_pager_post_description);
+        final TextView location = itemView.findViewById(R.id.viewpager_post_location);
 
         title.setText(currentPostToPresent.getTitle());
-        description.setText(currentPostToPresent.getDescription());
+        location.setText(currentPostToPresent.getLocation());
 
         Model.getInstance().getImage(currentPostToPresent.getImage(), new Model.GetImageListener() {
                 @Override

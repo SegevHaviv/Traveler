@@ -28,10 +28,6 @@ public class RegisterActivity extends AppCompatActivity {
     private Button mRegisterButton;
     //Buttons
 
-    //ProgressBar
-    private ProgressBar mSpinner;
-    //ProgressBar
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         initializeViews();
-
         initializeButtons();
-        bindButtons();
     }
 
     private void initializeViews(){
@@ -50,11 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initializeButtons(){
-        mSpinner.setVisibility(View.GONE);
         mRegisterButton = findViewById(R.id.register_button);
-    }
-
-    private void bindButtons(){
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,12 +53,11 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void onRegisterButtonClicked(){
-        mRegisterButton.setEnabled(false);
-        final ProgressDialog dialog = ProgressDialog.show(this, "",
-                "Creating A New User...", true);
 
-        hideKeyboard();
+    private void onRegisterButtonClicked(){
+        final ProgressDialog dialog = ProgressDialog.show(this, "",
+                "Creating A New User...", false);
+
 
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
@@ -78,7 +67,6 @@ public class RegisterActivity extends AppCompatActivity {
         userModel.createUser(email, password, new UserModel.UserModelRegisterListener() {
             @Override
             public void onRegister() {
-                mSpinner.setVisibility(View.GONE);
                 Intent switchActivityIntent = new Intent(getApplicationContext(),MainScreenActivity.class);
                 switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 dialog.dismiss();
@@ -92,15 +80,5 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Register Failed", Toast.LENGTH_SHORT).show();
             }
         });
-        mRegisterButton.setEnabled(true);
-    }
-
-    private void hideKeyboard(){
-        View view = getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-
     }
 }

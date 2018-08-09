@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.PrivacyPolicyFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/privacy_policy_textView"
         android:layout_width="match_parent"

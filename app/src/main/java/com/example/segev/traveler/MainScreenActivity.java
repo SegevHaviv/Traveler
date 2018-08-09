@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -29,12 +28,8 @@ import com.example.segev.traveler.Fragments.HomeFragment;
 import com.example.segev.traveler.Fragments.PrivacyPolicyFragment;
 import com.example.segev.traveler.Fragments.SavedFragment;
 import com.example.segev.traveler.Fragments.UserProfileFragment;
-import com.example.segev.traveler.Model.Post;
-import com.example.segev.traveler.Model.PostAsyncDao;
 import com.example.segev.traveler.Model.UserModel;
-
-import java.util.List;
-import java.util.zip.Inflater;
+import com.example.segev.traveler.Model.ZoomOutPageTransformer;
 
 //TODO CHANGE ALL THE WAY OF INITALIZING FRAGMENTS TO NEWINSTANCE
 
@@ -147,7 +142,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
     private void selectDrawerItem(MenuItem menuItem) {
         menuItem.setChecked(true);
-        mDrawerLayout.closeDrawers();
+        mDrawerLayout.closeDrawer(GravityCompat.START);
 
 
         // Create a new fragment and specify the fragment to show based on nav item clicked
@@ -156,7 +151,7 @@ public class MainScreenActivity extends AppCompatActivity {
         int itemThatWasSelected = menuItem.getItemId();
 
         switch(itemThatWasSelected) {
-            case R.id.nav_home: // TODO Change so it'll come to the same fragment each time.
+            case R.id.nav_home:
                 fragmentClass = HomeFragment.class;
                 break;
 
@@ -189,7 +184,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
         if(fragmentClass != null){
             try {
-                 fragment = (Fragment) fragmentClass.newInstance();
+                fragment = (Fragment) fragmentClass.newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -220,7 +215,7 @@ public class MainScreenActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Log.d(LOG_TAG,"Logging out from user : " + UserModel.getInstance().getCurrentUser().getEmail());
                             UserModel.getInstance().signOutAccount();
-                            Intent switchActivityIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                            Intent switchActivityIntent = new Intent(getApplicationContext(),ZoomOutPageTransformer.LoginActivity.class);
                             switchActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(switchActivityIntent);
                             finish();

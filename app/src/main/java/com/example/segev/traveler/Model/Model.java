@@ -75,7 +75,7 @@ public class Model {
         @Override
         protected void onActive() {
             super.onActive();
-            Log.d(LOG_TAG,"ON ACTIVE HAS BEEN CALLED");
+
 
             // 1. get the students list from the local DB
             PostAsyncDao.getAllPosts(new PostAsyncDao.PostAsyncDaoListener<List<Post>>() {
@@ -83,7 +83,6 @@ public class Model {
                 public void onComplete(final List<Post> postsFroLocalDB) {
                     // 2. update the live data with the new student list
                     setValue(postsFroLocalDB);
-                    Log.d(LOG_TAG, "got students from local DB " + postsFroLocalDB.size());
 
                     // 3. get the student list from firebase
                     modelFirebase.getAllPosts(new ModelFirebase.GetAllPostsListener() {
@@ -93,11 +92,9 @@ public class Model {
                             long mostRecentDateFromLocal = getLastUpdatedDate(postsFroLocalDB);
                             long mostRecentDateFromFirebase = getLastUpdatedDate(postsFromFireBase);
 
-                            Log.d(LOG_TAG," local is " +  mostRecentDateFromLocal + " firebase is " + mostRecentDateFromFirebase);
 
                             if(mostRecentDateFromFirebase != mostRecentDateFromLocal || postsFroLocalDB.size() != postsFromFireBase.size()) {
                                 setValue(postsFromFireBase);
-                                Log.d(LOG_TAG, "got students from firebase " + postsFromFireBase.size());
 
                                 // 5. update the local DB - need to delete all and insert all
                                 PostAsyncDao.deleteAllPosts(new PostAsyncDao.PostAsyncDaoListener<Boolean>() {
@@ -120,7 +117,6 @@ public class Model {
         @Override
         protected void onInactive() {
             super.onInactive();
-            Log.d(LOG_TAG,"INACTIVE");
             cancelGetAllPosts();
         }
 
@@ -142,7 +138,7 @@ public class Model {
         }
     }
 
-    ////////////////////////////// Post List Data Class ///////////////////////////////////////
+    ////////////////////////////// End Post List Data Class ///////////////////////////////////////
 
 
     PostListData postListData = new PostListData();
@@ -263,32 +259,121 @@ public class Model {
 
 
     //////////////////////// Searches ///////////////////////////
-    public void insertSearch(final SearchQuery query){
-        SearchQueryAsyncDao.insertSearchQuery(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<Boolean>() {
-            @Override
-            public void onComplete(Boolean data) {
-                modelFirebase.insertSearch(query);
-            }
-        },query);
-    }
 
-    public void getTopThreeSearches(final ModelFirebase.onGotSearchTopFive listener){
-        SearchQueryAsyncDao.getTopThreeQueries(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<List<SearchQuery>>() {
-            @Override
-            public void onComplete(List<SearchQuery> data) {
-                listener.onComplete(data);
-                modelFirebase.getTopThreeSearches(listener);
-            }
-        });
-    }
+//    public void insertSearch(final SearchQuery query){
+//        SearchQueryAsyncDao.insertSearchQuery(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<Boolean>() {
+//            @Override
+//            public void onComplete(Boolean data) {
+//                modelFirebase.insertSearch(query);
+//            }
+//        },query);
+//    }
 
-    public void getSearchByQuery(final String query,final ModelFirebase.onGotSearchByNameListener listener){
+//    public void getTopThreeSearches(final ModelFirebase.onGotSearchTopFive listener){
+//        SearchQueryAsyncDao.getTopThreeQueries(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<List<SearchQuery>>() {
+//            @Override
+//            public void onComplete(List<SearchQuery> data) {
+//                listener.onComplete(data);
+//                modelFirebase.getTopThreeSearches(listener);
+//            }
+//        });
+//    }
+//    public void getAllSearchQueries(){
+//
+//    }
+
+    public void getSearchByQuery(final String query,final SearchQueryAsyncDao.SearchQueryAsyncDaoListener<SearchQuery> listener){
         SearchQueryAsyncDao.getSearchQueryByQuery(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<SearchQuery>() {
             @Override
             public void onComplete(SearchQuery data) {
-                listener.onComplete(data);
-                modelFirebase.getSearchByQuery(query,listener);
+                    listener.onComplete(data);
             }
         },query);
     }
+//
+//    public void increaseQuerySearchAmount(final String query){
+//        getSearchByQuery(query, new ModelFirebase.onGotSearchByNameListener() {
+//            @Override
+//            public void onComplete(SearchQuery search) {
+//                if(search != null){
+//                    search.setSearchesAmount(search.getSearchesAmount() + 1);
+//                }else{
+//                    search = new SearchQuery(query,0);
+//                }
+//                insertSearch(search);
+//            }
+//        });
+//    }
+
+    ////////////////////////////// Search List Data Class ///////////////////////////////////////
+    class SearchListData extends MutableLiveData<List<SearchQuery>> {
+
+        @Override
+        protected void onActive() {
+            super.onActive();
+            SearchQueryAsyncDao.getAllSearchQueries(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<List<SearchQuery>>() {
+                @Override
+                public void onComplete(final List<SearchQuery> queriesFromLocalDB) {
+                    // 2. update the live data with the new query list
+                    setValue(queriesFromLocalDB);
+
+                    // 3. get the searchquery list from firebase
+                    modelFirebase.getAllSearchQueries(new ModelFirebase.GetAllSearchQueriesListener() {
+                        @Override
+                        public void onSuccess(final List<SearchQuery> searchQueriesFromFireBase) {
+                            // 4. update the live data with the new student list)
+                            setValue(searchQueriesFromFireBase);
+
+                                // 5. update the local DB - need to delete all and insert all
+                                SearchQueryAsyncDao.deleteAllSearchQueries(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<Boolean>() {
+                                    @Override
+                                    public void onComplete(Boolean data) {
+                                        SearchQueryAsyncDao.insertAllSearchQueries(new SearchQueryAsyncDao.SearchQueryAsyncDaoListener<Boolean>() {
+                                            @Override
+                                            public void onComplete(Boolean data) {}
+                                        }, searchQueriesFromFireBase);
+                                    }
+                                }, queriesFromLocalDB);
+                            }
+                        });
+                    }
+                });
+            }
+
+        @Override
+        protected void onInactive() {
+            super.onInactive();
+            cancelGetAllSearchQueries();
+        }
+
+        public SearchListData() {
+            super();
+            setValue(new LinkedList<SearchQuery>());
+        }
+
+    }
+
+    ////////////////////////////// Search List Data Class ///////////////////////////////////////
+
+
+    SearchListData searchListData = new SearchListData();
+
+    public LiveData<List<SearchQuery>> getAllSearchQueries(){
+        return searchListData;
+    }
+
+    public void insertSearch(SearchQuery searchQuery){
+        modelFirebase.insertSearch(searchQuery);
+    }
+
+    //implement delete search query
+    public void deleteSearchQuery(final SearchQuery searchQuery){
+        modelFirebase.deleteSearch(searchQuery);
+    }
+
+
+    private void cancelGetAllSearchQueries() {
+        modelFirebase.cancelGetAllSearchQueries();
+    }
+
 }

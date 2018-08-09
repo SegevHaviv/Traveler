@@ -29,6 +29,4 @@ public interface PostDao {
 
     @Delete
     void deletePost(Post post);
-
-    //implement drop table
 }

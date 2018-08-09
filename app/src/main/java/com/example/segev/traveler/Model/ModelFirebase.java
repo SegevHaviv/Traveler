@@ -30,6 +30,7 @@ public class ModelFirebase {
     private static final String SEARCH_TABLE_NAME = "searches";
     private static final String LOG_TAG = ModelFirebase.class.getSimpleName();
     private ValueEventListener eventListener;
+    private ValueEventListener searchEventListener;
 
     private static final Object LOCK = new Object();
     private static ModelFirebase instance;
@@ -147,7 +148,7 @@ public class ModelFirebase {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap image = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                Log.d("TAG","get image from firebase success");
+
                 listener.onDone(image);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -168,56 +169,89 @@ public class ModelFirebase {
         mDatabase.child(SEARCH_TABLE_NAME).child(query.getQuery()).setValue(query);
     }
 
-    public interface onGotSearchByNameListener{
-        void onComplete(SearchQuery search);
+    public void deleteSearch(SearchQuery query){
+        mDatabase.child(SEARCH_TABLE_NAME).child(query.getQuery()).removeValue();
     }
 
-    public void getSearchByQuery(String query,final onGotSearchByNameListener listener){
-        DatabaseReference mRef = mDatabase.child(SEARCH_TABLE_NAME).child(query);
-
-        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                listener.onComplete(dataSnapshot.getValue(SearchQuery.class));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) { }
-        });
+    public void cancelGetAllSearchQueries() {
+        mDatabase.child(SEARCH_TABLE_NAME).removeEventListener(searchEventListener);
     }
 
-    public interface onGotSearchTopFive{
-        void onComplete(List<SearchQuery> search);
+
+    public interface GetAllSearchQueriesListener{
+        void onSuccess(List<SearchQuery> searchQueryList);
     }
 
-    public void getTopThreeSearches(final onGotSearchTopFive listener){
+    public void getAllSearchQueries(final GetAllSearchQueriesListener listener) {
         DatabaseReference mRef = mDatabase.child(SEARCH_TABLE_NAME);
 
-        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        searchEventListener = mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                LinkedList<SearchQuery> queriesList = new LinkedList<>();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    SearchQuery currQuery = data.getValue(SearchQuery.class);
-                    queriesList.add(currQuery);
-                }
+                List<SearchQuery> searchQueryList = new LinkedList<>();
 
-                Collections.sort(queriesList, new Comparator<SearchQuery>() {
-                    @Override
-                    public int compare(SearchQuery o1, SearchQuery o2) {
-                        return o2.getSearchesAmount() - o1.getSearchesAmount();
-                    }
-                });
-
-                if(queriesList.size() > 3)
-                    listener.onComplete(queriesList.subList(0,3));
-                else{
-                    listener.onComplete(queriesList);
+                for (DataSnapshot querySnapshot: dataSnapshot.getChildren()) {
+                    SearchQuery query = querySnapshot.getValue(SearchQuery.class);
+                    searchQueryList.add(query);
                 }
+                listener.onSuccess(searchQueryList);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
+
+//    public interface onGotSearchByNameListener{
+//        void onComplete(SearchQuery search);
+//    }
+//
+//    public void getSearchByQuery(String query,final onGotSearchByNameListener listener){
+//        DatabaseReference mRef = mDatabase.child(SEARCH_TABLE_NAME).child(query);
+//
+//        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                listener.onComplete(dataSnapshot.getValue(SearchQuery.class));
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) { }
+//        });
+//    }
+
+//    public interface onGotSearchTopFive{
+//        void onComplete(List<SearchQuery> search);
+//    }
+
+//    public void getTopThreeSearches(final onGotSearchTopFive listener){
+//        DatabaseReference mRef = mDatabase.child(SEARCH_TABLE_NAME);
+//
+//        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                LinkedList<SearchQuery> queriesList = new LinkedList<>();
+//                for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                    SearchQuery currQuery = data.getValue(SearchQuery.class);
+//                    queriesList.add(currQuery);
+//                }
+//
+//                Collections.sort(queriesList, new Comparator<SearchQuery>() {
+//                    @Override
+//                    public int compare(SearchQuery o1, SearchQuery o2) {
+//                        return o2.getSearchesAmount() - o1.getSearchesAmount();
+//                    }
+//                });
+//
+//                if(queriesList.size() > 3)
+//                    listener.onComplete(queriesList.subList(0,3));
+//                else{
+//                    listener.onComplete(queriesList);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) { }
+//        });
+//    }
 }

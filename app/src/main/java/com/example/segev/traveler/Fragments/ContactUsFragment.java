@@ -1,5 +1,6 @@
 package com.example.segev.traveler.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,10 +16,7 @@ import android.widget.Toast;
 import com.example.segev.traveler.R;
 
 public class ContactUsFragment extends Fragment {
-
     private static final String LOG_TAG = ContactUsFragment.class.getSimpleName();
-
-    public ContactUsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,8 +29,10 @@ public class ContactUsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("Contact Us");
-        NavigationView view = getActivity().findViewById(R.id.nav_view);
+        Activity currentActivity = getActivity();
+
+        currentActivity.setTitle("Contact Us");
+        NavigationView view = currentActivity.findViewById(R.id.nav_view);
         view.getMenu().getItem(4).setChecked(true);
     }
 }

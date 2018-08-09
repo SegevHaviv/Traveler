@@ -26,11 +26,7 @@ import com.example.segev.traveler.R;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
-//todo change the image
 
-// SUMMARY
-//SO FAR WE CAN UPLOAD IMAGE AND WE VALIDATE IT BEFORE WE SUBMIT
-//NEED TO CREATE THE COMMUNICATION WITH DBS AND SAVE THE PHOTOS
 
 public class PostNewFragment extends Fragment {
     private static final String LOG_TAG = PostNewFragment.class.getSimpleName();
@@ -39,11 +35,10 @@ public class PostNewFragment extends Fragment {
 
     private EditText mTitle_Field;
     private EditText mDescription_Field;
-    private Button mImages_Field;
     private EditText mLocation_Field;
     private Button mSubmit_Btn;
 
-    private ImageView uploaded_imageView; // Presenting the currently uploaded image.
+    private ImageView uploaded_imageView;
 
 
     private Bitmap mPhotos;
@@ -54,7 +49,7 @@ public class PostNewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_new_post, container, false);
         initializeViews(rootView);
 
-        mImages_Field.setOnClickListener(new View.OnClickListener() {
+        uploaded_imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onUploadImageButtonClicked();
@@ -72,7 +67,6 @@ public class PostNewFragment extends Fragment {
     private void initializeViews(View rootView) {
         uploaded_imageView = rootView.findViewById(R.id.post_new_uploaded_imageView);
         mDescription_Field = rootView.findViewById(R.id.post_new_description);
-        mImages_Field = rootView.findViewById(R.id.post_new_images);
         mLocation_Field = rootView.findViewById(R.id.post_new_location);
         mTitle_Field = rootView.findViewById(R.id.post_new_title);
         mSubmit_Btn = rootView.findViewById(R.id.post_new_submit);
@@ -98,7 +92,7 @@ public class PostNewFragment extends Fragment {
             public void onDone(String url) {
 
                 if(url != null) {
-                    Post postToInsert = new Post(userIdWhoPosted, currentDate, title, location, description,url, currentUserEmail); // TODO CHANGE INSERTED IMAGE
+                    Post postToInsert = new Post(userIdWhoPosted, currentDate, title, location, description,url, currentUserEmail);
                     Model.getInstance().insertPost(postToInsert);
                 }else{
                     Toast.makeText(getActivity(),"Adding post failed, please try again later.",Toast.LENGTH_LONG).show();
@@ -110,7 +104,6 @@ public class PostNewFragment extends Fragment {
     }
 
     private void onUploadImageButtonClicked(){
-        mImages_Field.setError(null);
         startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
     }
 
@@ -147,15 +140,8 @@ public class PostNewFragment extends Fragment {
             flag = false;
         }
         if(mPhotos == null) {
-            mImages_Field.setError("Required");
+            Toast.makeText(getActivity(),"Upload a photo", Toast.LENGTH_LONG).show();
             flag = false;
-        }
-        else{
-            Bitmap emptyBitmap = Bitmap.createBitmap(mPhotos.getWidth(), mPhotos.getHeight(), mPhotos.getConfig());
-            if(mPhotos.sameAs(emptyBitmap)) {
-                mImages_Field.setError("Required");
-                flag = false;
-            }
         }
         return flag;
     }
